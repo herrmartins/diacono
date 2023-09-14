@@ -1,0 +1,1 @@
+from .secretarial_home_view import SecretarialHomeView
