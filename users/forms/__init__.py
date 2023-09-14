@@ -1,0 +1,3 @@
+from .user_registration_form import RegisterUserForm
+from .login_form import LoginForm
+from .update_user_profile_form import UpdateUserProfileModelForm
