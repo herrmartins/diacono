@@ -9,15 +9,39 @@ class RegisterUserForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = ("username", "password1", "password2")
+        fields = ("username", "first_name", "last_name", "password1", "password2")
+
         labels = {
-            "username": "",
-            "password1": "",
-            "password2": "",
+            "username": "Nome do usuário:",
+            "first_name": "Nome:",
+            "last_name": "Sobrenome:",
         }
 
     def __init__(self, *args, **kwargs):
         super(RegisterUserForm, self).__init__(*args, **kwargs)
         self.fields["username"].widget.attrs["class"] = "form-control"
+        self.fields["username"].widget.attrs[
+            "placeholder"
+        ] = "Digite o nome do usuário desejado..."
+
+        self.fields["first_name"].widget.attrs["class"] = "form-control"
+        self.fields["first_name"].widget.attrs[
+            "placeholder"
+        ] = "Digite seu primeiro nome..."
+
+        self.fields["last_name"].widget.attrs["class"] = "form-control"
+        self.fields["last_name"].widget.attrs[
+            "placeholder"
+        ] = "Digite seu sobrenome..."
+
         self.fields["password1"].widget.attrs["class"] = "form-control"
+        self.fields["password1"].widget.attrs["type"] = "password"
+        self.fields["password1"].widget.attrs[
+            "placeholder"
+        ] = "Digite a senha desejada..."
+
         self.fields["password2"].widget.attrs["class"] = "form-control"
+        self.fields["password2"].widget.attrs["type"] = "password"
+        self.fields["password2"].widget.attrs[
+            "placeholder"
+        ] = "Redigite a senha desejada..."

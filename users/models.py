@@ -12,22 +12,24 @@ class CustomUser(AbstractUser):
         blank=True, null=True, auto_now=False, auto_now_add=False
     )
     address = models.CharField(blank=True, max_length=255)
+    # Não há validação, a não ser do próprio phonefield
+    # Se colocar uma validação de telefone brasileiro,
+    # se for estrangeiro, não vai dar.
+    # Como, a princípio, não serão milhares de usuários,
+    # vai dar certo.
     phone_number = PhoneNumberField(blank=True, unique=True, region="BR")
     is_whatsapp = models.BooleanField(blank=True, default=False)
     about = models.TextField(blank=True)
 
-    FUNCTION_CHOICES = (
-        ("S", "SECRETÁRIO(A)"),
-        ("T", "TESOUREIRO(A)"),
-        ("A", "ADMINISTRADOR"),
-        ("C", "CONGREGADO"),
-        ("N", "NÃO ASSINALADO"),
-    )
-
     class Types(models.TextChoices):
+        # Um membro
         REGULAR = "REGULAR", "Regular"
+        # Um membro com alguma função que utilize o sistema além do comum
         STAFF = "STAFF", "Staff"
+        # Caso se contrate um tesoureiro não membro
         ONLY_WORKER = "ONLY_WORKER", "Only Worker"
+
+        CONGREGATED = "CONGREGATED", "Congregated"
 
     type = models.CharField(
         _("Type"), max_length=50, choices=Types.choices, default=Types.REGULAR
@@ -40,26 +42,57 @@ class CustomUser(AbstractUser):
         )
 
 
+class UsersFunctions(models.Model):
+    class Types(models.TextChoices):
+        NOT_ASSIGNED = "N", "Não assinalado"
+        PASTOR = "P", "Pastor"
+        SECRETARY = "S", "Secretário"
+        TREASURER = "T", "Tesoureiro"
+
+    member = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    function = models.CharField(
+        max_length=1, choices=Types.choices, blank=True, null=False
+    )
+
+    class Meta:
+        verbose_name = "Função"
+        verbose_name_plural = "Funções"
+
+    def __str__(self):
+        return self.function
+
+
 class RegularMemberManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
         return (
             super().get_queryset(*args, **kwargs).filter(
-                type=CustomUser.Types.REGULAR)
+                type=CustomUser.Types.REGULAR
+            )
         )
 
 
 class StaffMemberManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
         return super().get_queryset(*args, **kwargs).filter(
-            type=CustomUser.Types.STAFF)
+            type=CustomUser.Types.STAFF
+        )
 
 
-class WorkerManager(models.Manager):
+class OnlyWorkerManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
         return (
             super()
             .get_queryset(*args, **kwargs)
             .filter(type=CustomUser.Types.ONLY_WORKER)
+        )
+
+
+class CongregatedManager(models.Manager):
+    def get_queryset(self, *args, **kwargs):
+        return (
+            super()
+            .get_queryset(*args, **kwargs)
+            .filter(type=CustomUser.Types.CONGREGATED)
         )
 
 
@@ -73,22 +106,6 @@ class RegularMember(CustomUser):
         if not self.pk:
             self.type = CustomUser.Types.REGULAR
         return super().save(*args, **kwargs)
-
-
-class UsersFunctions(models.Model):
-    member = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    function = models.CharField(
-        max_length=1, choices=CustomUser.FUNCTION_CHOICES,
-        blank=True, null=False
-    )
-    function_name = models.CharField(max_length=20, blank=True)
-
-    class Meta:
-        verbose_name = "Função"
-        verbose_name_plural = "Funções"
-
-    def __str__(self):
-        return self.function
 
 
 class StaffMember(CustomUser):
@@ -111,6 +128,30 @@ class StaffMember(CustomUser):
         return self.username
 
 
+class OnlyWorker(CustomUser):
+    objects = OnlyWorkerManager()
+
+    class Meta:
+        proxy = True
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.type = CustomUser.Types.REGULAR
+        return super().save(*args, **kwargs)
+
+
+class Congregated(CustomUser):
+    objects = CongregatedManager()
+
+    class Meta:
+        proxy = True
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.type = CustomUser.Types.REGULAR
+        return super().save(*args, **kwargs)
+
+
 @receiver(post_save, sender=CustomUser)
 def assing_role(sender, instance, created, **kwargs):
     if created:
@@ -119,5 +160,5 @@ def assing_role(sender, instance, created, **kwargs):
         )
         function.save()
     else:
-        print("Estou no else do pós-salvo...")
+        print("Tou aqui no else do post_save custumuser")
         reverse_lazy("core:home")

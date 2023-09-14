@@ -7,12 +7,13 @@ from users.models import UsersFunctions
 class UserProfileView(DetailView):
     model = CustomUser
     template_name = "users/user_profile.html"
-    context_object_name = "user"
+    context_object_name = "user_object"
     success_url = reverse_lazy("user-profile")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_role = UsersFunctions.objects.get(member_id=self.request.user.id)
-        print("Função do usuário:", user_role)
-        context["user_role"] = user_role
+        context["user_role"] = UsersFunctions.objects.get(
+            member_id=self.request.user.id
+        ).function
+        # Não está sendo utilizado
         return context

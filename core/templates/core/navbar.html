@@ -1,7 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-info p-3">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">IBRAdmin</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="{% url 'core:home' %}">IBRAdmin</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+      aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -22,19 +23,24 @@
           <a class="nav-link mx-2" href="{% url 'users:register' %}">Cadastrar</a>
         </li>
         {% endif %}
-
-        <li class="nav-item">
-          <a class="nav-link mx-2" href="#">Pricing</a>
-        </li>
+        {% if user.type == "STAFF" %}
         <li class="nav-item dropdown">
-          <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Company
+          <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            Operações
           </a>
+
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <li><a class="dropdown-item" href="#">Blog</a></li>
-            <li><a class="dropdown-item" href="#">About Us</a></li>
-            <li><a class="dropdown-item" href="#">Contact us</a></li>
+            {% if user_role == "S" %}
+              <li><a class="dropdown-item" href="#">Secretaria</a></li>
+            {% elif user_role == "T" %}
+              <li><a class="dropdown-item" href="#">Tesouraria</a></li>
+            {% elif user_role == "P" %}
+              <li><a class="dropdown-item" href="#">Secretaria</a></li>
+              <li><a class="dropdown-item" href="#">Tesouraria</a></li>
+            {% endif %}
           </ul>
+          {% endif %}
         </li>
       </ul>
       <ul class="navbar-nav ms-auto d-none d-lg-inline-flex">

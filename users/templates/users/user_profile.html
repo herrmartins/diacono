@@ -25,6 +25,7 @@
   <p>Função: {{user_role}}</p>
   <div class="container">
     <a href="{% url 'users:user-profile-update' user.id %}" class="btn btn-warning justify-content-center">Atualizar cadastro</a>
+    <a href="{% url 'users:change-user-password' %}" class="btn btn-warning justify-content-center">Alterar senha...</a>
   </div>
 </div>
 {% endblock %}

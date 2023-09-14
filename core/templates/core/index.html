@@ -1,11 +1,23 @@
 {% extends 'core/base.html' %} {% block content %}
 
-<p>Bem vindo, {{user}}</p>
+
 {% if not user.is_authenticated %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<p>Bem vindo, Anônimo!</p>
 <div class="container-sm my-4">
   <div class="row justify-content-center">
     <div class="col-sm-auto">
-      
+
       <p>Digite seus dados para entrar...</p>
       <form action="{% url 'login' %}" method="post">
         {%csrf_token%}{{login_form.as_p}}
@@ -14,6 +26,14 @@
     </div>
   </div>
 </div>
+
+{% else %}
+<div class="container">
+  <div class="container">
+    <p class="fs-3">Bem vindo, {{user}}...</p>
+  </div>
+</div>
+
 {% endif %}
 
 {% endblock %}

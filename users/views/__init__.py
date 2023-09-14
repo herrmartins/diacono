@@ -2,3 +2,4 @@ from .register_form_view import RegisterFormView
 from .signup_form_view import SignupFormView
 from .user_profile_view import UserProfileView
 from .update_user_profile_view import UserProfileUpdateView
+from .change_user_password_view import ChangeUserPasswordView
