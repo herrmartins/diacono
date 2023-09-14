@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
+    'secretarial.apps.SecretarialConfig',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.core_context_processor.context_user_data',
             ],
         },
     },

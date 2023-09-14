@@ -32,11 +32,11 @@
 
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             {% if user_role == "S" %}
-              <li><a class="dropdown-item" href="#">Secretaria</a></li>
+              <li><a class="dropdown-item" href="{% url 'secretarial:home' %}">Secretaria</a></li>
             {% elif user_role == "T" %}
               <li><a class="dropdown-item" href="#">Tesouraria</a></li>
             {% elif user_role == "P" %}
-              <li><a class="dropdown-item" href="#">Secretaria</a></li>
+              <li><a class="dropdown-item" href="{% url 'secretarial:home' %}">Secretaria</a></li>
               <li><a class="dropdown-item" href="#">Tesouraria</a></li>
             {% endif %}
           </ul>
