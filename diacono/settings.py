@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
     'secretarial.apps.SecretarialConfig',
+    'treasury.apps.TreasuryConfig',
 ]
 
 MIDDLEWARE = [
