@@ -17,7 +17,7 @@ class CustomUser(AbstractUser):
     # se for estrangeiro, não vai dar.
     # Como, a princípio, não serão milhares de usuários,
     # vai dar certo.
-    phone_number = PhoneNumberField(blank=True, unique=True, region="BR")
+    phone_number = PhoneNumberField(blank=True, unique=True, region="BR", null=True)
     is_whatsapp = models.BooleanField(blank=True, default=False)
     about = models.TextField(blank=True)
 
@@ -49,7 +49,7 @@ class UsersFunctions(models.Model):
         SECRETARY = "S", "Secretário"
         TREASURER = "T", "Tesoureiro"
 
-    member = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    member = models.ManyToManyField(CustomUser, related_name="user_roles", blank=True)
     function = models.CharField(
         max_length=1, choices=Types.choices, blank=True, null=False
     )
@@ -156,7 +156,7 @@ class Congregated(CustomUser):
 def assing_role(sender, instance, created, **kwargs):
     if created:
         function = UsersFunctions(
-            function="N", function_name="NÃO ASSINALADO", member_id=instance.id
+            function="N", member=instance
         )
         function.save()
     else:

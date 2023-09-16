@@ -24,23 +24,18 @@
         </li>
         {% endif %}
         {% if user.type == "STAFF" %}
-        <li class="nav-item dropdown">
-          <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-            data-bs-toggle="dropdown" aria-expanded="false">
-            Operações
-          </a>
+          <li class="nav-item dropdown">
+            <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Operações
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="{% url 'secretarial:home' %}">Secretaria</a></li>
+              <li><a class="dropdown-item" href="#">Tesouraria</a></li>
+            </ul>
+        {% endif %}
 
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            {% if user_role == "S" %}
-              <li><a class="dropdown-item" href="{% url 'secretarial:home' %}">Secretaria</a></li>
-            {% elif user_role == "T" %}
-              <li><a class="dropdown-item" href="#">Tesouraria</a></li>
-            {% elif user_role == "P" %}
-              <li><a class="dropdown-item" href="{% url 'secretarial:home' %}">Secretaria</a></li>
-              <li><a class="dropdown-item" href="#">Tesouraria</a></li>
-            {% endif %}
-          </ul>
-          {% endif %}
+
         </li>
       </ul>
       <ul class="navbar-nav ms-auto d-none d-lg-inline-flex">
