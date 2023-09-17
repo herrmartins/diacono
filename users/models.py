@@ -2,8 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -17,7 +15,8 @@ class CustomUser(AbstractUser):
     # se for estrangeiro, não vai dar.
     # Como, a princípio, não serão milhares de usuários,
     # vai dar certo.
-    phone_number = PhoneNumberField(blank=True, unique=True, region="BR", null=True)
+    phone_number = PhoneNumberField(
+        blank=True, unique=True, region="BR", null=True)
     is_whatsapp = models.BooleanField(blank=True, default=False)
     about = models.TextField(blank=True)
 
@@ -32,7 +31,8 @@ class CustomUser(AbstractUser):
         CONGREGATED = "CONGREGATED", "Congregated"
 
     type = models.CharField(
-        _("Type"), max_length=50, choices=Types.choices, default=Types.REGULAR
+        _("Type"), max_length=50, choices=Types.choices,
+        default=Types.CONGREGATED
     )
 
     def get_absolute_url(self):
@@ -49,7 +49,8 @@ class UsersFunctions(models.Model):
         SECRETARY = "S", "Secretário"
         TREASURER = "T", "Tesoureiro"
 
-    member = models.ManyToManyField(CustomUser, related_name="user_roles", blank=True)
+    member = models.ManyToManyField(
+        CustomUser, related_name="user_roles", blank=True)
     function = models.CharField(
         max_length=1, choices=Types.choices, blank=True, null=False
     )
@@ -150,15 +151,3 @@ class Congregated(CustomUser):
         if not self.pk:
             self.type = CustomUser.Types.REGULAR
         return super().save(*args, **kwargs)
-
-
-@receiver(post_save, sender=CustomUser)
-def assing_role(sender, instance, created, **kwargs):
-    if created:
-        function = UsersFunctions(
-            function="N", member=instance
-        )
-        function.save()
-    else:
-        print("Tou aqui no else do post_save custumuser")
-        reverse_lazy("core:home")
