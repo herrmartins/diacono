@@ -1,0 +1,1 @@
+from .search_minute_form import SearchMinuteForm

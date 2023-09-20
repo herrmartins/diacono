@@ -1,0 +1,4 @@
+from .minute_categories_model import MinuteCategoriesModel
+from .meeting_agenda import MeetingAgendaModel
+from .minute_model import MeetingMinuteModel
+from .minute_template_model import MinuteTemplateModel

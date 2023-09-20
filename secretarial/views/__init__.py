@@ -1,1 +1,2 @@
 from .secretarial_home_view import SecretarialHomeView
+from .minutes_editor_view import MinutesEditorView

@@ -1,5 +1,5 @@
 from django.views.generic.edit import UpdateView
-from users.models import CustomUser, UsersFunctions
+from users.models import CustomUser
 from users.forms import UpdateUserProfileModelForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 
