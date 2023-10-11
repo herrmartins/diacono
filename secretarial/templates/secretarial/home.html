@@ -10,46 +10,49 @@
   {% endfor %}
 </ul>
 {% endif %}
-<div class="container">
-  <div class="container">
-    <p class="fs-3">Bem vindo à secretaria, {{user}}...</p>
-  </div>
-  <div class="d-flex justify-content-center">
-    <div class="flex-item mx-3">
-      <div class="card" style="width: 18rem;">
-        <img src="{% static 'img/members.jpg' %}" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Usuários</h5>
-          <p class="card-text">Altere as atribuições e alteraçoes de funções dos membros, bem como permite promover
-            congregados a membros.</p>
-          <a href="#" class="btn btn-primary">Qualificar membros</a>
-        </div>
-      </div>
-
-    </div>
-    <div class="flex-item mx-3">
-      <div class="card" style="width: 18rem;">
-        <img src="{% static 'img/ata.jpg' %}" class="card-img-top" alt="Atas...">
-        <div class="card-body">
-          <h5 class="card-title">Atas</h5>
-          <p class="card-text">Questões de registro burocrático das decisões da igreja.</p>
-          <a href="{% url 'secretarial:minutes-editor' %}" class="btn btn-primary">Registrar Ata</a>
-        </div>
-      </div>
-    </div>
-    <div class="card" style="width: 18rem;">
-    <div class="flex-item mx-3">
-        <h5 class="card-title">Buscar ata...</h5>
-        <form action="." method="POST">
-          {% csrf_token %}
-          {{form.media}}
-          {{search_form.as_p}}
-          <input type="submit" value="Buscar" class="btn btn-primary">
-        </form>
-      </div>
-    </div>
-  </div>
+<div class="container justify-content-center">
+  <p class="fs-3">Bem vindo à secretaria, {{user}}...</p>
 </div>
+  <div class="container">
+    <div class="row justify-content-center">
+
+      <div class="col mx-auto">
+
+        <div class="card my-3" style="width: 18rem;">
+          <img src="{% static 'img/members.jpg' %}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">Usuários</h5>
+            <p class="card-text">Altere as atribuições e alteraçoes de funções dos membros, bem como permite promover
+              congregados a membros.</p>
+            <a href="#" class="btn btn-primary">Qualificar membros</a>
+          </div>
+        </div>
+
+      </div>
+      <div class="col mx-auto">
+        <div class="card my-3" style="width: 18rem;">
+          <img src="{% static 'img/ata.jpg' %}" class="card-img-top" alt="Atas...">
+          <div class="card-body">
+            <h5 class="card-title">Atas</h5>
+            <p class="card-text">Questões de registro burocrático das decisões da igreja.</p>
+            <a href="{% url 'secretarial:minutes-editor' %}" class="btn btn-primary">Registrar Ata</a>
+          </div>
+        </div>
+      </div>
+      <div class="col mx-auto">
+        <div class="card my-3" style="width: 18rem;">
+          <h5 class="card-title">Buscar ata...</h5>
+          <form action="." method="POST">
+            {% csrf_token %}
+            {{form.media}}
+            {{search_form.as_p}}
+            <input type="submit" value="Buscar" class="btn btn-primary">
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 {% endblock %}

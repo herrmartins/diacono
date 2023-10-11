@@ -1,4 +1,5 @@
-from users.models import CustomUser, UsersFunctions
+from users.models import CustomUser
+from django.forms.models import model_to_dict
 
 
 def context_user_data(request):
@@ -6,8 +7,9 @@ def context_user_data(request):
         user = CustomUser.objects.get(pk=request.user.id)
 
         user_role = user.user_roles.all()
+
         print("Processador de contexto funcionando..",
-              user, "Função:", user_role)
+              user, "Função:", user_role, user.type)
         return {
             "user": user,
             "user_roles": user_role,

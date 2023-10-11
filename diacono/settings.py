@@ -37,9 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bootstrap_datepicker_plus',
     'phonenumber_field',
     'ckeditor',
+    'rest_framework',
 
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',

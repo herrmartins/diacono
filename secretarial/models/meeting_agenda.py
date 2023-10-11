@@ -3,7 +3,7 @@ from core.models import BaseModel
 
 
 class MeetingAgendaModel(BaseModel):
-    agenda_theme = models.CharField(max_length=100)
+    agenda_title = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.agenda_theme
+        return self.agenda_title

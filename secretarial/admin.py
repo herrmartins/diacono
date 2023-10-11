@@ -1,3 +1,9 @@
 from django.contrib import admin
+from secretarial.models import (
+    MeetingAgendaModel,
+    MeetingMinuteModel,
+    MinuteTemplateModel)
 
-# Register your models here.
+admin.site.register(MeetingAgendaModel)
+admin.site.register(MeetingMinuteModel)
+admin.site.register(MinuteTemplateModel)

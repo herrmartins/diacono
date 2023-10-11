@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-info p-3">
+<nav class="navbar navbar-expand-lg navbar-light bg-info p-2">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'core:home' %}">IBRAdmin</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
@@ -24,6 +24,11 @@
         </li>
         {% endif %}
         {% if user.type == "STAFF" %}
+        <li class="nav-item">
+          <a class="nav-link mx-2" href="#">Config</a>
+        </li>
+        {% endif %}
+        {% if user.type == "STAFF" %}
           <li class="nav-item dropdown">
             <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
               data-bs-toggle="dropdown" aria-expanded="false">
@@ -34,8 +39,6 @@
               <li><a class="dropdown-item" href="#">Tesouraria</a></li>
             </ul>
         {% endif %}
-
-
         </li>
       </ul>
       <ul class="navbar-nav ms-auto d-none d-lg-inline-flex">

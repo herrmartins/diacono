@@ -2,7 +2,6 @@ from django import forms
 from django.forms import ModelForm
 from users.models import CustomUser
 from django.forms.widgets import DateInput
-from bootstrap_datepicker_plus.widgets import DatePickerInput
 
 
 class UpdateUserProfileModelForm(ModelForm):
@@ -61,11 +60,10 @@ class UpdateUserProfileModelForm(ModelForm):
                     "placeholder": "Phone",
                 }
             ),
-            "date_of_birth": DatePickerInput(
-                format=("%d-%m-%Y"),
+            "date_of_birth": DateInput(
                 attrs={
-                    "class": "datepicker form-control my-2",
-                    "placeholder": "Data",
+                    "class": "form-control my-2",
+                    "type": "date",
                 },
             ),
             "about": forms.Textarea(

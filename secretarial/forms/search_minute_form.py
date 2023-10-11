@@ -1,7 +1,6 @@
 from django import forms
 from datetime import date
 from dateutil.relativedelta import relativedelta
-from bootstrap_datepicker_plus.widgets import DatePickerInput
 
 
 class SearchMinuteForm(forms.Form):
