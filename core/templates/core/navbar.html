@@ -1,6 +1,7 @@
+{% load static %}
 <nav class="navbar navbar-expand-lg navbar-light bg-info p-2">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'core:home' %}">IBRAdmin</a>
+    <a class="navbar-brand" href="{% url 'core:home' %}"><img src="{% static 'img/logo.jpg' %}" width="35" height="35"></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
       aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -23,12 +24,12 @@
           <a class="nav-link mx-2" href="{% url 'users:register' %}">Cadastrar</a>
         </li>
         {% endif %}
-        {% if user.type == "STAFF" %}
+        {% if user.type == "EQUIPE" %}
         <li class="nav-item">
           <a class="nav-link mx-2" href="#">Config</a>
         </li>
         {% endif %}
-        {% if user.type == "STAFF" %}
+        {% if user.type == "EQUIPE" %}
           <li class="nav-item dropdown">
             <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
               data-bs-toggle="dropdown" aria-expanded="false">
@@ -36,7 +37,7 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
               <li><a class="dropdown-item" href="{% url 'secretarial:home' %}">Secretaria</a></li>
-              <li><a class="dropdown-item" href="#">Tesouraria</a></li>
+              <li><a class="dropdown-item" href="{% url 'treasury:home' %}">Tesouraria</a></li>
             </ul>
         {% endif %}
         </li>

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'ckeditor',
     'rest_framework',
+    'xhtml2pdf',
 
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',

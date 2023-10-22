@@ -1,6 +1,7 @@
 {% extends 'core/base.html' %} {% block content %}
 {% load static %}
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}" />
 {% if messages %}
 <ul class="messages">
   {% for message in messages %}
@@ -10,49 +11,65 @@
   {% endfor %}
 </ul>
 {% endif %}
-<div class="container justify-content-center">
-  <p class="fs-3">Bem vindo à secretaria, {{user}}...</p>
+<div class="container text-center">
+  <p class="fs-3 fw-light">Bem vindo à secretaria, {{user.first_name}}...</p>
 </div>
-  <div class="container">
-    <div class="row justify-content-center">
-
-      <div class="col mx-auto">
-
-        <div class="card my-3" style="width: 18rem;">
-          <img src="{% static 'img/members.jpg' %}" class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">Usuários</h5>
-            <p class="card-text">Altere as atribuições e alteraçoes de funções dos membros, bem como permite promover
-              congregados a membros.</p>
-            <a href="#" class="btn btn-primary">Qualificar membros</a>
-          </div>
-        </div>
-
+<div class="col-12">
+  <div class="d-flex justify-content-center">
+    <div class="col-2 p-3 mx-2 my-3 bg-success text-white rounded text-center fw-bold">Membros<br><img
+        src="{% static 'img/smile.svg' %}"><br>
+      <p class="h2 mt-2 fw-light">{{number_of_members}}</p>
+    </div>
+    <div class="col-2 p-3 mx-2 my-3 bg-primary text-white rounded text-center fw-bold">Congregados<br><img
+        src="{% static 'img/user-plus.svg' %}"><br>
+      <p class="h2 mt-2 fw-light">{{number_of_visitors}}</p>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <form id="search-form">
+    {% csrf_token %}
+    <div class="input-group input-group-lg">
+      <div class="form-floating">
+        <input type="search" id="searched" class="form-control" placeholder="Digite o critério de busca..." />
+        <label for="searched" class="form-label">Escreva o(s) critério(s) da busca</label>
       </div>
-      <div class="col mx-auto">
-        <div class="card my-3" style="width: 18rem;">
-          <img src="{% static 'img/ata.jpg' %}" class="card-img-top" alt="Atas...">
-          <div class="card-body">
-            <h5 class="card-title">Atas</h5>
-            <p class="card-text">Questões de registro burocrático das decisões da igreja.</p>
-            <a href="{% url 'secretarial:minutes-editor' %}" class="btn btn-primary">Registrar Ata</a>
-          </div>
+      <select class="form-select">
+        <option value="minutes">em atas</option>
+        <option value="templates">em modelos de atas</option>
+        <option value="users">em usuários</option>
+        <option value="members">em membros</option>
+      </select>
+      <button type="submit" class="btn btn-primary">Buscar</button>
+    </div>
+  </form>
+
+  <div class="d-flex" id="search_result"></div>
+  <div class="col-12">
+    <div class="d-flex my-2 justify-content-center">
+      <div class="card mx-2" style="width: 18rem;">
+        <img src="{% static 'img/minute.jpg' %}" class="card-img-top" alt="Meeting Image">
+        <div class="card-body">
+          <h5 class="card-title">Registro de Assembéias</h5>
+          <p class="card-text">Seção de Registros de Assembéias. Neste espaço, você pode redigir registros de reuniões,
+            consultar registros anteriores, criar modelos para esses registros e executar outras tarefas relacionadas a
+            registros de reuniões.</p>
+          <a href="{% url 'secretarial:minute-home' %}" class="btn btn-primary">Acessar</a>
         </div>
       </div>
-      <div class="col mx-auto">
-        <div class="card my-3" style="width: 18rem;">
-          <h5 class="card-title">Buscar ata...</h5>
-          <form action="." method="POST">
-            {% csrf_token %}
-            {{form.media}}
-            {{search_form.as_p}}
-            <input type="submit" value="Buscar" class="btn btn-primary">
-          </form>
-
+      <div class="card mx-2" style="width: 18rem;">
+        <img src="{% static 'img/users.jpg' %}" class="card-img-top" alt="Meeting Image">
+        <div class="card-body">
+          <h5 class="card-title">Usuários</h5>
+          <p class="card-text">Gerenciamento de Usuários. Nesta seção, você pode classificar os usuários, atribuir
+            funções
+            e até mesmo removê-los conforme necessário.</p>
+          <a href="{% url 'secretarial:users-qualifying' %}" class="btn btn-primary">Acessar</a>
         </div>
       </div>
     </div>
   </div>
-
+</div>
+<script src="{% static 'js/secretarial_search.js' %}"></script>
 
 {% endblock %}

@@ -7,13 +7,14 @@ from django.urls import reverse
 
 
 class MeetingMinuteModel(BaseModel):
-    presidente = models.ForeignKey(
+    president = models.ForeignKey(
         CustomUser, on_delete=models.SET_NULL, null=True,
         related_name="president")
     secretary = models.ForeignKey(
         CustomUser, on_delete=models.SET_NULL, null=True,
         related_name="secretary")
     meeting_date = models.DateField()
+    number_of_attendees = models.IntegerField()
     body = RichTextField(blank=True, null=True)
     agenda = models.ManyToManyField(
         MeetingAgendaModel, blank=True)
@@ -23,7 +24,7 @@ class MeetingMinuteModel(BaseModel):
         verbose_name_plural = "Atas"
 
     def get_absolute_url(self):
-        return reverse("core:minute-detail", kwargs={"pk": self.pk})
+        return reverse("secretarial:minute-detail-view", kwargs={"pk": self.pk})
 
     def __str__(self):
-        return "Reunião do dia" + self.meeting_date
+        return f"Reunião do dia {self.meeting_date}"
