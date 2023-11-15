@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ata de Reunião</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="d-grid">
+        <p class="fs-1 grid-item d-block">ATA DA {{meeting_date}}</p>
+        <div class="grid-item">
+          <p class="fs-6">{{ body|safe }}</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

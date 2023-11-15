@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+{% load static%}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li>
+        {{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% block content %}
+<div class="container text-center">
+    <p class="fs-3 fw-light">Lista de relatórios disponíveis</p>
+    <p class="fw-light">Apenas relatórios a partir do primeiro mês, inserido ao início do uso do sistema.</p>
+</div>
+<div class="container col-10">
+    <div class="row">
+        <div class="col-md-6">
+            {% for r in reports %}
+            <div class="row"><p>{{r.month}} - {{r.balance}} </p><a href="{% url 'treasury:monthly-transactions' r.month.year r.month.month %}">**</a></div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

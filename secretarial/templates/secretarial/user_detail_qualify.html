@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %} {% block content %}
+{% load static %}
+
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  <li>
+    {{ message }}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+<div class="container text-center">
+  <p class="fs-3 fw-light">Dados do usuário</p>
+</div>
+<div class="container border border-dark">
+
+  <div class="container py-2">
+    <div class="row">
+      <div class="col-5">
+        <p>Informações do Usuário:</p>
+        <p>{{user_object.first_name}} {{user_object.last_name}}</p>
+      </div>
+      <div class="col-3">
+        <p>Função do usuário:</p>
+        {% if user_object.type == "CONGREGADO" or user_object.type == "USUARIO" %}
+          <p>Esse usuário não pode ter função, pois não é membro</p>
+        {% else %}
+        <form method="POST" action="">
+        {{form.functions}}
+        <input type="submit" name="Enviar" class="btn btn-primary">
+        </form>
+        {% endif %}
+      </div>
+      <div class="col-3">
+        <p>Status:</p>
+        <p>{{form.type}}</p>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

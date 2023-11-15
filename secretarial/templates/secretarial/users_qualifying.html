@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %}
+{% block content %}
+{% load static %}
+{% load get_user_role %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css'%}">
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  <li>
+    {{ message }}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+<div class="container">
+  <div class="container text-center">
+    <p class="fs-3 fw-light">Sessão de usuários</p>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-4">
+        {% for u in users %}
+        <div class="row">
+          <div class="col">
+            <p>{{u.first_name}} {{u.last_name}}</p>
+          </div>
+          <div class="col"><a href="{% url 'secretarial:user-qualify' u.id %}"><img src="{% static 'img/edit-black.svg' %}"
+                class=""></a></div>
+        </div>
+
+        {% endfor %}
+      </div>
+      <div class="col">
+        {% for u in users %}
+        <div class="row">
+
+          {% for ur in u.id|get_user_role %}
+          <div class="col-3">
+            <p>{{ur}}</p>
+          </div>
+
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

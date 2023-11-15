@@ -1,0 +1,56 @@
+from django import forms
+from django.forms import ModelForm
+from secretarial.models import MeetingMinuteModel
+from datetime import date
+from ckeditor.widgets import CKEditorWidget
+
+
+class MinuteModelForm(ModelForm):
+    class Meta:
+        model = MeetingMinuteModel
+        fields = (
+            "president",
+            "secretary",
+            "meeting_date",
+            "number_of_attendees",
+            "body",
+            "agenda",
+        )
+        labels = {
+            "president": "Presidente",
+            "secretary": "Secretário",
+            "meeting_date": "Data da Reunião",
+            "number_of_attendees": "Número de presentes",
+            "body": "Corpo do Texto",
+            "agenda": "Pauta",
+        }
+        widgets = {
+            "president": forms.Select(
+                attrs={
+                    "class": "grid-item d-inline form-control my-2",
+                }
+            ),
+            "secretary": forms.Select(
+                attrs={
+                    "class": "grid-item d-inline form-control my-2",
+                }
+            ),
+            "meeting_date": forms.DateInput(
+                attrs={
+                    "class": "form-control",
+                    "type": "date",
+                    "value": date.today(),
+                }
+            ),
+            "number_of_attendees": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                }
+            ),
+            "body": CKEditorWidget(),
+            "agenda": forms.SelectMultiple(
+                attrs={
+                    "class": "grid-item d-inline form-control my-2",
+                }
+            ),
+        }
