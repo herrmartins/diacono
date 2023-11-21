@@ -6,6 +6,7 @@ function loadTransactionData() {
     const positiveTransactionsElement = document.getElementById("positive_transactions");
     const negativeTransactionsElement = document.getElementById("negative_transactions");
     const transactionsTableBody = document.querySelector('#transactions_list table tbody');
+    const deleteButtons = document.querySelectorAll('.delete-button');
     let currentBalance = 0;
 
     // Fetch the current balance first
@@ -43,6 +44,7 @@ function loadTransactionData() {
                         const descriptionCell = row.insertCell(1);
                         const valueCell = row.insertCell(2);
                         const currentBalanceCell = row.insertCell(3);
+                        const operationsCell = row.insertCell(4);
 
                         const dateObj = new Date(item.date + 'T00:00:00Z');
                         const offset = dateObj.getTimezoneOffset();
@@ -64,17 +66,30 @@ function loadTransactionData() {
 
                         currentBalanceTrack += parseFloat(item.amount);
                         currentBalanceCell.textContent = formatCurrency(currentBalanceTrack);
+                        operationsCell.innerHTML = `
+                        <button class="btn btn-primary btn-sm">Editar</a>
+                        <button class="btn btn-danger btn-sm delete-button" data-id="${item.id}">Apagar</button>
+                        `
+                    });
+                    const deleteButtons = document.querySelectorAll('.delete-button');
+                    deleteButtons.forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            const itemId = event.target.dataset.id; // Get the ID from the button's data attribute
+                            deleteTransaction(itemId); // Call the deleteTransaction function with the item ID
+                        });
                     });
                         const lastRow = transactionsTableBody.insertRow();
                         const lastDateCell = lastRow.insertCell(0);
                         const lastDescriptionCell = lastRow.insertCell(1);
                         const lastValueCell = lastRow.insertCell(2);
                         const lastTrackBalanceCell = lastRow.insertCell(3);
+                        const lastOperationsCell = lastRow.insertCell(4);
 
                         lastDateCell.innerText = "-";
                         lastDescriptionCell.innerText = "-";
                         lastValueCell.innerHTML = '<div class="fw-bold">Saldo Atual:</div>';
                         lastTrackBalanceCell.textContent = formatCurrency(currentBalanceTrack);
+                        lastOperationsCell.innerText = ''
 
                 })
                 .catch(error => {
@@ -84,6 +99,33 @@ function loadTransactionData() {
         .catch(error => {
             console.error('Erro ao executar o fetch:', error);
         });
+}
+
+async function deleteTransaction(id) {
+    const csrfToken = getCookie('csrftoken');
+    const headers = {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+    };
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/transaction/${id}/delete/`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({}), // Ensure you send the required body (if needed)
+        });
+
+        if (response.ok) {
+            // Dynamically create and display a success message
+            showDynamicMessage('Transação deletada...', 'alert-success');
+            loadTransactionData(); // Reload data after a successful POST
+        } else {
+            // Dynamically create and display an error message
+            showDynamicMessage('Falha ao deletar a transação...', 'alert-danger');
+        }
+    } catch (error) {
+        // Dynamically create and display an error message
+        showDynamicMessage('Erro: ' + error, 'alert-danger');
+    }
 }
 
 

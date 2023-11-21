@@ -27,7 +27,7 @@ urlpatterns = [
     ),
     path("getbalance", views.getCurrentBalance, name="get-current-balance"),
     path(
-        "api/transaction/<int:pk>/delete/",
+        "api/transaction/<int:pk>/delete",
         views.DeleteTransaction.as_view(),
         name="delete-transaction",
     ),
