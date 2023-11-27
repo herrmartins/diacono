@@ -16,9 +16,14 @@
 </div>
 <div class="container col-10">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 text-center">
             {% for r in reports %}
-            <div class="row"><p>{{r.month}} - {{r.balance}} </p><a href="{% url 'treasury:monthly-transactions' r.month.year r.month.month %}">**</a></div>
+            <div class="row"><a href="{% url 'treasury:monthly-transactions' r.month.year r.month.month %}"><p>Relatório de {{r.month.month}}/{{r.month.year}} - {{r.balance}} </p></a></div>
+            {% endfor %}
+        </div>
+        <div class="col-md-6 text-center">
+            {% for r in analytical_reports %}
+            <div class="row"><a href="{% url 'treasury:analytical-report' r.id %}"><p>Relatório Analítico de {{r.month.month}}/{{r.month.year}} - {{r.balance}} </p></a></div>
             {% endfor %}
         </div>
     </div>

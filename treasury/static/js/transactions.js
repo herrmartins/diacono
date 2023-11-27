@@ -1,4 +1,6 @@
-import { getCookie } from './get_cookie.js';
+import {
+    getCookie
+} from './get_cookie.js';
 
 function loadTransactionData() {
     const currentBalanceElement = document.getElementById("currentBalance");
@@ -19,7 +21,6 @@ function loadTransactionData() {
             }
         })
         .then(data => {
-            console.log(data)
             currentBalanceElement.innerText = formatCurrency(data.current_balance);
             currentBalance = parseFloat(data.last_month_balance);
             currentAnawareBalanceElement.innerText = formatCurrency(data.unaware_month_balance);
@@ -36,7 +37,7 @@ function loadTransactionData() {
                     }
                 })
                 .then(data => {
-                    let currentBalanceTrack = parseFloat(currentBalance); // Initialize with the current balance
+                    let currentBalanceTrack = parseFloat(currentBalance);
                     transactionsTableBody.innerHTML = ''; // Clear existing data
                     data.forEach(item => {
                         const row = transactionsTableBody.insertRow();
@@ -67,29 +68,42 @@ function loadTransactionData() {
                         currentBalanceTrack += parseFloat(item.amount);
                         currentBalanceCell.textContent = formatCurrency(currentBalanceTrack);
                         operationsCell.innerHTML = `
-                        <button class="btn btn-primary btn-sm">Editar</a>
-                        <button class="btn btn-danger btn-sm delete-button" data-id="${item.id}">Apagar</button>
+                        <div class="grid">
+                            <button class="btn btn-light btn-sm edit-button grid-item" data-id="${item.id}">&#x270D;</a>
+                                <form action="{% url 'treasury:transaction-delete' ${item.id} %}" method="POST"
+                                        class="d-inline">
+                                        <button type="submit" class="btn btn-danger btn-sm grid-item">X
+                                        </button>
+                                </form>
+                                </div>
                         `
                     });
                     const deleteButtons = document.querySelectorAll('.delete-button');
+                    const editButtons = document.querySelectorAll('.edit-button')
                     deleteButtons.forEach(button => {
                         button.addEventListener('click', function(event) {
-                            const itemId = event.target.dataset.id; // Get the ID from the button's data attribute
-                            deleteTransaction(itemId); // Call the deleteTransaction function with the item ID
+                            const itemId = event.target.dataset.id;
+                            deleteTransaction(itemId);
                         });
                     });
-                        const lastRow = transactionsTableBody.insertRow();
-                        const lastDateCell = lastRow.insertCell(0);
-                        const lastDescriptionCell = lastRow.insertCell(1);
-                        const lastValueCell = lastRow.insertCell(2);
-                        const lastTrackBalanceCell = lastRow.insertCell(3);
-                        const lastOperationsCell = lastRow.insertCell(4);
+                    editButtons.forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            const itemId = event.target.dataset.id;
+                            window.location.href = `/treasury/transaction/${itemId}`
+                        });
+                    });
+                    const lastRow = transactionsTableBody.insertRow();
+                    const lastDateCell = lastRow.insertCell(0);
+                    const lastDescriptionCell = lastRow.insertCell(1);
+                    const lastValueCell = lastRow.insertCell(2);
+                    const lastTrackBalanceCell = lastRow.insertCell(3);
+                    const lastOperationsCell = lastRow.insertCell(4);
 
-                        lastDateCell.innerText = "-";
-                        lastDescriptionCell.innerText = "-";
-                        lastValueCell.innerHTML = '<div class="fw-bold">Saldo Atual:</div>';
-                        lastTrackBalanceCell.textContent = formatCurrency(currentBalanceTrack);
-                        lastOperationsCell.innerText = ''
+                    lastDateCell.innerText = "-";
+                    lastDescriptionCell.innerText = "-";
+                    lastValueCell.innerHTML = '<div class="fw-bold">Saldo Atual:</div>';
+                    lastTrackBalanceCell.textContent = formatCurrency(currentBalanceTrack);
+                    lastOperationsCell.innerText = ''
 
                 })
                 .catch(error => {
@@ -109,15 +123,14 @@ async function deleteTransaction(id) {
     };
     try {
         const response = await fetch(`http://127.0.0.1:8000/api/transaction/${id}/delete/`, {
-            method: 'POST',
+            method: 'DELETE',
             headers: headers,
-            body: JSON.stringify({}), // Ensure you send the required body (if needed)
         });
 
         if (response.ok) {
             // Dynamically create and display a success message
             showDynamicMessage('Transação deletada...', 'alert-success');
-            loadTransactionData(); // Reload data after a successful POST
+            loadTransactionData(); // Reload data after a successful DELETE
         } else {
             // Dynamically create and display an error message
             showDynamicMessage('Falha ao deletar a transação...', 'alert-danger');
@@ -129,15 +142,19 @@ async function deleteTransaction(id) {
 }
 
 
+
 function formatCurrency(amount) {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(amount);
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }).format(amount);
 }
 
 let apiTransactionUrl = 'http://127.0.0.1:8000/api/transactions/post';
 
 const form = document.getElementById('transaction_form');
 
-form.addEventListener('submit', async function (e) {
+form.addEventListener('submit', async function(e) {
     e.preventDefault();
 
     const formData = new FormData(form);

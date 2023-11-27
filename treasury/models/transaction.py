@@ -1,10 +1,9 @@
 from django.db import models
 from django.db.models.signals import post_save, pre_save, post_delete
 from django.dispatch import receiver
-from django.utils import timezone
-
 from core.models import BaseModel
 from treasury.models import CategoryModel
+from django.db.models import Sum, F
 
 
 class TransactionModel(BaseModel):
@@ -56,16 +55,37 @@ def update_monthly_balance(sender, instance, created, **kwargs):
     if created:
         month = instance.date.replace(day=1)
         amount = instance.amount
+        print("OPERAÇÃO:", amount)
 
         from treasury.models import MonthlyBalance
 
-        monthly_balance, created = MonthlyBalance.objects.get_or_create(
-            month=month, defaults={"balance": amount}
+        # Get or create the MonthlyBalance for the current month
+        monthly_balance, _ = MonthlyBalance.objects.get_or_create(
+            month=month,
+            defaults={"balance": 0},
         )
 
-    if not created:
-        monthly_balance.balance += amount
-        monthly_balance.save()
+        # Calculate the sum of all transaction amounts for the current month
+        current_month_total = (
+            TransactionModel.objects.filter(
+                date__year=instance.date.year, date__month=instance.date.month
+            ).aggregate(total_amount=Sum("amount"))["total_amount"]
+            or 0
+        )
+
+        last_month_balance = (
+            MonthlyBalance.objects.filter(month__lt=month).order_by("-month").first()
+        )
+
+        if last_month_balance:
+            cumulative_balance = last_month_balance.balance + current_month_total
+        else:
+            cumulative_balance = current_month_total
+
+        # Update the monthly balance with the cumulative balance
+        MonthlyBalance.objects.filter(pk=monthly_balance.pk).update(
+            balance=cumulative_balance
+        )
 
 
 @receiver(pre_save, sender=TransactionModel)
@@ -85,7 +105,10 @@ def update_monthly_balance_on_delete(sender, instance, **kwargs):
 
     try:
         monthly_balance = MonthlyBalance.objects.get(month=month)
+        print("OPERAÇÃO:", amount)
+        print("BALANÇO:", monthly_balance)
         monthly_balance.balance -= amount
+        print("APÓS SOMA DA OPERAÇÃO,", monthly_balance.balance)
         monthly_balance.save()
     except MonthlyBalance.DoesNotExist:
-        print("Erro")
+        print("MonthlyBalance does not exist for this month")

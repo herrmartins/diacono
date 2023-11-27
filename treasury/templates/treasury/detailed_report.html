@@ -13,7 +13,16 @@
 {% block content %}
 <div class="container text-center">
     <p class="fs-3 fw-light">Relatório detalhado de {{month}}/{{year}}</p>
+    <p class="fs-6 fw-light">Saldo anterior: {{balance}}</p>
+  <div class="container py-2">
+    <a href="{% url 'treasury:export-pdf-monthly-report' month year %}" class="btn btn-primary">Gerar PDF</a>
+    <a href="" class="btn btn-secondary">Criar CSV</a>
+    {% if ncd %}
+        <a href="{% url 'treasury:gen-report' month year %}" class="btn btn-success">Gerar Relatório Analítico</a>
+    {% endif %}
+  </div>
 </div>
+
 <div class="container-fluid col-10">
     <div class="card">
         <div class="card-header">
@@ -64,12 +73,13 @@
                                     </form>
                                 </div>
                         </tr>
+                        
                         {% endfor %}
                         <td>
                             <p class="fw-bold my-1">Total:</p>
                         </td>
-                        <td></td>
-                        <td></td>
+                        <td>No DB</td>
+                        <td>{{balance}}</td>
                         <td>{{total}}</td>
                         <td></td>
                     </tbody>

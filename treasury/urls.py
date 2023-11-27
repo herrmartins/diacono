@@ -7,6 +7,11 @@ from treasury.views import (
     TransactionDetailView,
     TransactionUpdateView,
     TransactionDeleteView,
+    GenerateMonthlyPDFTransactionListView,
+    GenerateMonthlyReportView,
+    MonthlyReportCreateView,
+    MonthlyAnalyticalReportDetailView,
+    GenerateMonthlyPDFAnReportView,
 )
 
 app_name = "treasury"
@@ -25,12 +30,41 @@ urlpatterns = [
         name="monthly-transactions",
     ),
     path(
+        "reports/pdf/<int:month>/<int:year>/",
+        GenerateMonthlyPDFTransactionListView,
+        name="export-pdf-monthly-report",
+    ),
+    path(
         "transaction/<int:pk>",
         TransactionDetailView.as_view(),
         name="transaction-detail",
     ),
-    path("transaction/update/<int:pk>",
-         TransactionUpdateView.as_view(), name="transaction-update"),
-    path("transaction/delete/<int:pk>",
-         TransactionDeleteView.as_view(), name="transaction-delete"),
+    path(
+        "transaction/update/<int:pk>",
+        TransactionUpdateView.as_view(),
+        name="transaction-update",
+    ),
+    path(
+        "transaction/delete/<int:pk>",
+        TransactionDeleteView.as_view(),
+        name="transaction-delete",
+    ),
+    path(
+        "report/save", MonthlyReportCreateView.as_view(), name="create-monthly-report"
+    ),
+    path(
+        "anreport/<int:pk>",
+        MonthlyAnalyticalReportDetailView.as_view(),
+        name="analytical-report",
+    ),
+    path(
+        "report/generate/<int:month>/<int:year>/",
+        GenerateMonthlyReportView.as_view(),
+        name="gen-report",
+    ),
+    path(
+        "anreport/pdf/<int:pk>",
+        GenerateMonthlyPDFAnReportView,
+        name="export-anreport-pdf",
+    ),
 ]

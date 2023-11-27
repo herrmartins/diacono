@@ -4,9 +4,13 @@ from treasury.models import (
     TransactionEditHistory,
     CategoryModel,
     MonthlyBalance,
+    MonthlyReportModel,
+    MonthlyTransactionByCategoryModel,
 )
 
 admin.site.register(TransactionModel)
 admin.site.register(TransactionEditHistory)
 admin.site.register(CategoryModel)
 admin.site.register(MonthlyBalance)
+admin.site.register(MonthlyReportModel)
+admin.site.register(MonthlyTransactionByCategoryModel)

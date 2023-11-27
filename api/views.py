@@ -175,3 +175,4 @@ class TransactionsCreateAPIView(generics.CreateAPIView):
 class DeleteTransaction(generics.DestroyAPIView):
     queryset = TransactionModel.objects.all()
     serializer_class = TransactionModelSerializer
+    lookup_field = 'pk'
