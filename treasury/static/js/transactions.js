@@ -11,7 +11,6 @@ function loadTransactionData() {
     const deleteButtons = document.querySelectorAll('.delete-button');
     let currentBalance = 0;
 
-    // Fetch the current balance first
     fetch("http://127.0.0.1:8000/api/getbalance")
         .then(response => {
             if (response.ok) {
@@ -27,7 +26,6 @@ function loadTransactionData() {
             positiveTransactionsElement.innerText = formatCurrency(data.sum_positive_transactions);
             negativeTransactionsElement.innerText = formatCurrency(data.sum_negative_transactions);
 
-            // Now fetch and display the transactions
             fetch("http://127.0.0.1:8000/api/transactions")
                 .then(response => {
                     if (response.ok) {
@@ -38,7 +36,7 @@ function loadTransactionData() {
                 })
                 .then(data => {
                     let currentBalanceTrack = parseFloat(currentBalance);
-                    transactionsTableBody.innerHTML = ''; // Clear existing data
+                    transactionsTableBody.innerHTML = '';
                     data.forEach(item => {
                         const row = transactionsTableBody.insertRow();
                         const dateCell = row.insertCell(0);
@@ -128,15 +126,15 @@ async function deleteTransaction(id) {
         });
 
         if (response.ok) {
-            // Dynamically create and display a success message
+
             showDynamicMessage('Transação deletada...', 'alert-success');
-            loadTransactionData(); // Reload data after a successful DELETE
+            loadTransactionData();
         } else {
-            // Dynamically create and display an error message
+
             showDynamicMessage('Falha ao deletar a transação...', 'alert-danger');
         }
     } catch (error) {
-        // Dynamically create and display an error message
+
         showDynamicMessage('Erro: ' + error, 'alert-danger');
     }
 }
@@ -179,15 +177,12 @@ form.addEventListener('submit', async function(e) {
         });
 
         if (response.ok) {
-            // Dynamically create and display a success message
             showDynamicMessage('Transação salva...', 'alert-success');
-            loadTransactionData(); // Reload data after a successful POST
+            loadTransactionData();
         } else {
-            // Dynamically create and display an error message
             showDynamicMessage('Falha ao salvar a transação...', 'alert-danger');
         }
     } catch (error) {
-        // Dynamically create and display an error message
         showDynamicMessage('Error: ' + error, 'alert-danger');
     }
 });
