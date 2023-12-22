@@ -31,4 +31,5 @@ urlpatterns = [
         views.DeleteTransaction.as_view(),
         name="delete-transaction",
     ),
+    path("search", views.unifiedSearch, name="secretarial-search"),
 ]

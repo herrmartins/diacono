@@ -21,6 +21,7 @@ def GenerateMonthlyPDFAnReportView(request, pk):
     negative_transactions_dict = get_aggregate_transactions_by_category(
         reports_year, reports_month, False
     )
+
     m_result = (
         an_report.total_positive_transactions + an_report.total_negative_transactions
     )
@@ -38,8 +39,7 @@ def GenerateMonthlyPDFAnReportView(request, pk):
         "balance": Decimal(an_report.total_balance),
     }
     print("CONTEXTO PARA PDF: ", context)
-    html_index = render_to_string(
-        "treasury/export_analytical_report.html", context)
+    html_index = render_to_string("treasury/export_analytical_report.html", context)
 
     weasyprint_html = weasyprint.HTML(
         string=html_index, base_url="http://127.0.0.1:8000/media"

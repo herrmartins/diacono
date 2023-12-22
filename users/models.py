@@ -18,19 +18,14 @@ class CustomUser(AbstractUser):
     # se for estrangeiro, não vai dar.
     # Como, a princípio, não serão milhares de usuários,
     # vai dar certo.
-    phone_number = PhoneNumberField(
-        blank=True, unique=True, region="BR", null=True)
+    phone_number = PhoneNumberField(blank=True, unique=True, region="BR", null=True)
     is_whatsapp = models.BooleanField(blank=True, default=False)
     about = models.TextField(blank=True)
     functions = models.ManyToManyField(
         "UsersFunctions", related_name="user_roles", blank=True
     )
     married_to = models.ForeignKey(
-        'self',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='spouse'
+        "self", on_delete=models.SET_NULL, null=True, blank=True, related_name="spouse"
     )
     date_of_marriage = models.DateField(
         blank=True, null=True, auto_now=False, auto_now_add=False
@@ -49,18 +44,16 @@ class CustomUser(AbstractUser):
         SIMPLE_USER = "USUARIO", "Usuário"
 
     type = models.CharField(
-        _("Type"), max_length=50,
-        choices=Types.choices, default=Types.SIMPLE_USER
+        _("Type"), max_length=50, choices=Types.choices, default=Types.SIMPLE_USER
     )
 
     def get_absolute_url(self):
         return reverse_lazy(
-            "users:user-profile", kwargs={"pk": str(
-                self.id)}, current_app="users"
+            "users:user-profile", kwargs={"pk": str(self.id)}, current_app="users"
         )
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name} ({self.username})'
+        return f"{self.first_name} {self.last_name} ({self.username})"
 
 
 class UsersFunctions(models.Model):
@@ -84,15 +77,13 @@ class UsersFunctions(models.Model):
 class RegularMemberManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
         return (
-            super().get_queryset(*args, **kwargs).filter(
-                type=CustomUser.Types.REGULAR)
+            super().get_queryset(*args, **kwargs).filter(type=CustomUser.Types.REGULAR)
         )
 
 
 class StaffMemberManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(
-            type=CustomUser.Types.STAFF)
+        return super().get_queryset(*args, **kwargs).filter(type=CustomUser.Types.STAFF)
 
 
 class OnlyWorkerManager(models.Manager):

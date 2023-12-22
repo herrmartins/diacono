@@ -67,11 +67,8 @@ function loadTransactionData() {
                         currentBalanceCell.textContent = formatCurrency(currentBalanceTrack);
                         operationsCell.innerHTML = `
                         <div class="grid">
-                            <button class="btn btn-light btn-sm edit-button grid-item" data-id="${item.id}">&#x270D;</a>
-                                <form action="{% url 'treasury:transaction-delete' ${item.id} %}" method="POST"
-                                        class="d-inline">
-                                        <button type="submit" class="btn btn-danger btn-sm grid-item">X
-                                        </button>
+                            <a href="/treasury/transaction/${item.id}" class="btn btn-light btn-sm edit-button grid-item" data-id="${item.id}">&#x270D;</a>
+                            <a href="/treasury/transaction/delete/${item.id}" class="btn btn-danger btn-sm grid-item">X</a>
                                 </form>
                                 </div>
                         `

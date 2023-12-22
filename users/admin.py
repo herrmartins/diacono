@@ -8,10 +8,14 @@ class CustomUserAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         if obj.type in (CustomUser.Types.CONGREGATED, CustomUser.Types.SIMPLE_USER):
+            initial_functions = form.initial.get('functions', [])
+            current_functions = form.cleaned_data.get('functions', [])
 
-            if form.cleaned_data['functions'].count() != form.initial['functions'].count():
+            if len(initial_functions) != len(current_functions):
                 raise ValidationError(
-                    "Congregados e meros usuários não podem ter funções.")
+                    "Congregated and Simple Users cannot have modified functions."
+                )
+
         super().save_model(request, obj, form, change)
 
 
