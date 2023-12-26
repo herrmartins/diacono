@@ -16,24 +16,24 @@
     <p class="fs-3 fw-light">Registro de Reuniões</p>
   </div>
   <div class="col-12 d-flex justify-content-center">
-    <div class="col-2 p-3 mx-2 my-3 bg-success text-white rounded text-center fw-bold">Atas Registradas<br><a href="{% url 'secretarial:list-minutes' %}"><img
-        src="{% static 'img/archive.svg' %}"></a><br>
+    <div class="col-2 p-3 mx-2 my-3 bg-success text-white rounded text-center fw-bold">Atas Registradas<br><a
+        href="{% url 'secretarial:list-minutes' %}"><img src="{% static 'img/archive.svg' %}"></a><br>
       <p class="h2 mt-2 fw-light">{{number_of_minutes}}</p>
     </div>
-    <div class="col-2 p-3 mx-2 my-3 bg-primary text-white rounded text-center fw-bold">Modelos de Atas<br><a href="{% url 'secretarial:list-templates' %}"><img
-        src="{% static 'img/file-text.svg' %}"></a><br>
+    <div class="col-2 p-3 mx-2 my-3 bg-primary text-white rounded text-center fw-bold">Modelos de Atas<br><a
+        href="{% url 'secretarial:list-templates' %}"><img src="{% static 'img/file-text.svg' %}"></a><br>
       <p class="h2 mt-2 fw-light">{{number_of_templates}}</p>
     </div>
-    <div class="col-2 p-3 mx-2 my-3 bg-info text-white rounded text-center fw-bold">Trechos de Atas<br><a href="{% url 'secretarial:list-excerpts' %}"><img
-        src="{% static 'img/file-minus.svg' %}"></a><br>
+    <div class="col-2 p-3 mx-2 my-3 bg-info text-white rounded text-center fw-bold">Trechos de Atas<br><a
+        href="{% url 'secretarial:list-excerpts' %}"><img src="{% static 'img/file-minus.svg' %}"></a><br>
       <p class="h2 mt-2 fw-light">{{number_of_excerpts}}</p>
     </div>
-    
-      <div class="col-2 p-3 mx-2 my-3 bg-warning text-white rounded text-center fw-bold">Projetos de Ata<br><a href="{% url 'secretarial:list-minutes-projects' %}"><img
-          src="{% static 'img/edit.svg' %}"></a><br>
-        <p class="h2 mt-2 fw-light">{{number_of_projects}}</p>
-      </div>
-    
+
+    <div class="col-2 p-3 mx-2 my-3 bg-warning text-white rounded text-center fw-bold">Projetos de Ata<br><a
+        href="{% url 'secretarial:list-minutes-projects' %}"><img src="{% static 'img/edit.svg' %}"></a><br>
+      <p class="h2 mt-2 fw-light">{{number_of_projects}}</p>
+    </div>
+
   </div>
   <div class="container-md">
     <form>
@@ -53,6 +53,7 @@
     <div class="d-flex" id="search-results">
 
     </div>
+    {% if user.is_secretary %}
     <div class="container my-3">
       <div class="container-xl">
         <div class="col-12">
@@ -79,6 +80,18 @@
         </div>
       </div>
     </div>
+    {%else %}
+    <div class="container">
+      <div class="row justify-content-center py-2">
+        <div class="col-8">
+          <p class="fw-light text-center">Lista de Atas</p>
+          {% for m in minutes %}
+          <p><a href="{% url 'secretarial:minute-detail-view' m.pk %}">{{ m }}</a></p></p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
   </div>
 
 </div>

@@ -5,18 +5,12 @@ from secretarial.models import (
     MeetingMinuteModel,
 )
 from treasury.models import TransactionModel, CategoryModel
-from users.models import UsersFunctions, CustomUser
+from users.models import CustomUser
 
 
 class MinuteExcerptsSerializer(serializers.ModelSerializer):
     class Meta:
         model = MinuteExcerptsModel
-        fields = "__all__"
-
-
-class UsersFunctionsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UsersFunctions
         fields = "__all__"
 
 

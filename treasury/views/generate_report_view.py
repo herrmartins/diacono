@@ -8,10 +8,15 @@ from dateutil.relativedelta import relativedelta
 from datetime import date
 from django.http import HttpResponse, Http404
 from datetime import datetime
-from treasury.utils import get_aggregate_transactions_by_category, get_total_transactions_amount
+from treasury.utils import (
+    get_aggregate_transactions_by_category,
+    get_total_transactions_amount,
+)
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
-class GenerateMonthlyReportView(TemplateView):
+class GenerateMonthlyReportView(PermissionRequiredMixin, TemplateView):
+    permission_required = "add_monthlyreportmodel"
     template_name = "treasury/monthly_report_generator.html"
 
     def get(self, request, month, year, *args, **kwargs):

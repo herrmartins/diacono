@@ -1,8 +1,10 @@
 from django.views.generic import ListView
 from treasury.models import MonthlyBalance, MonthlyReportModel
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
-class FinanceReportsListView(ListView):
+class FinanceReportsListView(PermissionRequiredMixin, ListView):
+    permission_required = 'treasury.view_transactionmodel'
     template_name = "treasury/reports_list.html"
     model = MonthlyBalance
     context_object_name = "reports"

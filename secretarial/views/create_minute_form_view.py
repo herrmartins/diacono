@@ -3,9 +3,11 @@ from secretarial.forms import MinuteModelForm
 from secretarial.models import MinuteProjectModel, MinuteTemplateModel
 from secretarial.models import MinuteExcerptsModel
 from django.shortcuts import redirect
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
-class CreateMinuteFormView(FormView):
+class CreateMinuteFormView(PermissionRequiredMixin, FormView):
+    permission_required = "secretarial.add_meetingminutemodel"
     template_name = "secretarial/minute_creation.html"
     form_class = MinuteModelForm
 

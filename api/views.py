@@ -9,7 +9,6 @@ from treasury.models import MonthlyBalance
 
 from .serializers import (
     MinuteExcerptsSerializer,
-    UsersFunctionsSerializer,
     CustomUserSerializer,
     MeetingMinuteModelSerializer,
     MinuteTemplateModelSerializer,
@@ -17,8 +16,7 @@ from .serializers import (
     TransactionCatModelSerializer,
     BalanceSerializer,
 )
-from users.models import UsersFunctions, CustomUser, RegularMember
-
+from users.models import CustomUser
 from secretarial.models import MinuteExcerptsModel
 from secretarial.models import MeetingMinuteModel, MinuteTemplateModel
 
@@ -75,13 +73,6 @@ def getDetailedData(request, pk):
     excerpt.times_used += 1
     excerpt.save()
     serializer = MinuteExcerptsSerializer(excerpt, many=False)
-    return Response(serializer.data)
-
-
-@api_view(["GET"])
-def getUserFunction(request, pk):
-    user_roles = UsersFunctions.objects.filter(member=pk)
-    serializer = UsersFunctionsSerializer(user_roles, many=True)
     return Response(serializer.data)
 
 

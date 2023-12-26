@@ -1,10 +1,10 @@
 from django.views.generic import DetailView
 from treasury.models import MonthlyReportModel
-from dateutil.relativedelta import relativedelta
-from datetime import date
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
-class MonthlyAnalyticalReportDetailView(DetailView):
+class MonthlyAnalyticalReportDetailView(PermissionRequiredMixin, DetailView):
+    permission_required = 'treasury.view_transactionmodel'
     template_name = 'treasury/detailed_analytical_report.html'
     model = MonthlyReportModel
     context_object_name = 'report'

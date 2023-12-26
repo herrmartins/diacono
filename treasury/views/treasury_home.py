@@ -4,9 +4,11 @@ from dateutil.relativedelta import relativedelta
 from django.shortcuts import get_object_or_404
 from treasury.forms import TransactionForm, InitialBalanceForm
 from treasury.models import MonthlyBalance
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
-class TreasuryHomeView(TemplateView):
+class TreasuryHomeView(PermissionRequiredMixin, TemplateView):
+    permission_required = 'treasury.view_transactionmodel'
     template_name = "treasury/home.html"
 
     def get_context_data(self, **kwargs):

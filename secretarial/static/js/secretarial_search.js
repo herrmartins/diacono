@@ -76,17 +76,23 @@ document.addEventListener("DOMContentLoaded", function() {
           data.forEach(function(item) {
             let displayFields = "";
             if (searchCategory === "minutes") {
-              displayFields = `${item.president} | ${item.meeting_date}`;
+              displayFields = `Presidente: ${item.president} | Data: ${item.meeting_date}`;
+
+              let link = document.createElement("a");
+              link.textContent = "Ver Ata";
+              link.href = `/secretarial/meeting/detail/${item.id}`;
+
+              let listItem = document.createElement("li");
+              listItem.classList.add("list-group-item");
+              listItem.appendChild(document.createTextNode(displayFields + " "));
+              listItem.appendChild(link);
+
+              resultList.appendChild(listItem);
             } else if (searchCategory === "templates") {
               displayFields = item.title;
             } else if (searchCategory === "users" || searchCategory === "members") {
               displayFields = `${item.first_name} ${item.last_name}`;
             }
-
-            let listItem = document.createElement("li");
-            listItem.classList.add("list-group-item");
-            listItem.textContent = displayFields;
-            resultList.appendChild(listItem);
           });
 
           cardBody.appendChild(resultList);

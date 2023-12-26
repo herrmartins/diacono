@@ -27,4 +27,4 @@ class MeetingMinuteModel(BaseModel):
         return reverse("secretarial:minute-detail-view", kwargs={"pk": self.pk})
 
     def __str__(self):
-        return f"Reunião do dia {self.meeting_date}"
+        return f"Ata da reunião do dia {self.meeting_date}"

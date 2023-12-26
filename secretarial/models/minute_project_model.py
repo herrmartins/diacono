@@ -1,4 +1,5 @@
 from django.db import models
+from core.models import BaseModel
 from users.models import CustomUser
 from django.dispatch import receiver
 from secretarial.models import MeetingAgendaModel
@@ -8,7 +9,7 @@ from django.db.models.signals import pre_save
 from .make_basic_minute_text import make_minute
 
 
-class MinuteProjectModel(models.Model):
+class MinuteProjectModel(BaseModel):
     president = models.ForeignKey(
         CustomUser, on_delete=models.SET_NULL, null=True, related_name="meet_president"
     )

@@ -5,6 +5,8 @@ from users.views import (
     UserProfileUpdateView,
     RegisterFormView,
     ChangeUserPasswordView,
+    UpdateUserTypeView,
+    UpdateUserFunctionView,
 )
 
 app_name = "users"
@@ -22,5 +24,11 @@ urlpatterns = [
         "profile/change_password",
         ChangeUserPasswordView.as_view(),
         name="change-user-password",
+    ),
+    path("update/<int:pk>", UpdateUserTypeView.as_view(), name="update-user-type"),
+    path(
+        "update/function/<int:pk>",
+        UpdateUserFunctionView.as_view(),
+        name="update-user-functions",
     ),
 ]

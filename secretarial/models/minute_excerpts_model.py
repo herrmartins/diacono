@@ -13,8 +13,7 @@ class MinuteExcerptsModel(BaseModel):
         verbose_name_plural = "Trechos de Atas"
 
     def get_absolute_url(self):
-        return reverse("secretarial:excerpt-detail",
-                       kwargs={'pk': self.pk})
+        return reverse("secretarial:excerpt-detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.title

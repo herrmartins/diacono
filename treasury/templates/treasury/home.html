@@ -73,6 +73,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4 col-12">
+            {% if user.is_treasurer %}
             {% if form_transaction %}
             <p class="text-center">Adicionar Transação</p>
             <form action="" method="POST" id="transaction_form">
@@ -98,6 +99,8 @@
                 <button type="reset" class="btn btn-warning">Limpar</button>
             </form>
             {% endif %}
+            {% else %}
+            {%endif %}
         </div>
         <div class="col-md-8 col-12" id="transactions_list">
             <div class="table-responsive mx-auto">
@@ -108,7 +111,7 @@
                             <th>Descrição</th>
                             <th>Valor</th>
                             <th>Saldo</th>
-                            <th>Operações</th>
+                            <th>Editar</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -24,7 +24,7 @@
       </p>
       <p class="card-text">Data de Nascimento: {{user.date_of_birth}}</p>
       <p class="card-text">Sobre: {{user.about}}</p>
-      <p class="card-text">Função: {% for f in user_roles %} {{f}} {% endfor %}</p>
+      <p class="card-text ">Função: {% if user.is_pastor %}<p class="fw-light">Pastor</p>{% endif %}{% if user.is_secretary %}<p class="fw-light">Secretário</p>{% endif %}{% if user.is_treasurer %}<p class="fw-light">Tesoureiro</p>{% endif %}</p>
       <div class="text-center">
         <a href="{% url 'users:user-profile-update' user.id %}" class="btn btn-warning">Atualizar cadastro</a>
         <a href="{% url 'users:change-user-password' %}" class="btn btn-warning">Alterar senha</a>

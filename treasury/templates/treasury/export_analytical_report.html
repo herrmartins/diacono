@@ -14,7 +14,7 @@
     <body>
         <div class="card-body">
             <div class="container">
-                <p class="header">IGREJA BATISTA REGULAR DE CIDADE SATÉLITE</p>
+                <p class="header">{{church_info.name}}</p>
                 <p class="sub-header">RELATÓRIO ANALÍTICO de {{month}}/{{year}}</p>
                 <table class="table">
                     <colgroup>
@@ -101,7 +101,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <p class="item-text-bold">Saldo Final</p>
+                                <p class="item-text-bold">Saldo Final em {{date}}</p>
                             </td>
                             <td>
                                 <p class="{% if balance >= 0 %}item-text-green{% else %}item-text-red{% endif %}">

@@ -2,12 +2,14 @@ from django.views.generic import MonthArchiveView
 from treasury.models import TransactionModel, MonthlyBalance
 from dateutil.relativedelta import relativedelta
 from datetime import date
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
-class TransactionMonthArchiveView(MonthArchiveView):
+class TransactionMonthArchiveView(PermissionRequiredMixin, MonthArchiveView):
+    permission_required = 'treasury.view_transactionmodel'
     model = TransactionModel
-    date_field = "date"  # The field that stores the date
-    month_format = "%m"  # Format for the month
+    date_field = "date"
+    month_format = "%m"
     allow_future = False
     template_name = "treasury/detailed_report.html"
     context_object_name = "finance_entries"

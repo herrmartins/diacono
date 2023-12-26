@@ -1,8 +1,10 @@
 from django.views.generic import UpdateView
 from secretarial.models import MinuteExcerptsModel
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
-class ExcerptUpdateView(UpdateView):
+class ExcerptUpdateView(PermissionRequiredMixin, UpdateView):
+    permission_required = "secretarial.add_meetingminutemodel"
     model = MinuteExcerptsModel
     template_name = 'secretarial/excerpt_updated.html'
     fields = ['title', 'excerpt']

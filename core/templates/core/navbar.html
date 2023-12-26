@@ -25,12 +25,12 @@
           <a class="nav-link mx-2" href="{% url 'users:register' %}">Cadastrar</a>
         </li>
         {% endif %}
-        {% if user.type == "EQUIPE" %}
+        {% if user.is_authenticated and user.is_secretary %}
         <li class="nav-item">
-          <a class="nav-link mx-2" href="#">Config</a>
+          <a class="nav-link mx-2" href="{% url 'core:config' %}">Config</a>
         </li>
         {% endif %}
-        {% if user.type == "EQUIPE" %}
+
         <li class="nav-item dropdown">
           <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
             data-bs-toggle="dropdown" aria-expanded="false">
@@ -46,7 +46,7 @@
             </li>
         </li>
       </ul>
-      {% endif %}
+
       </li>
       </ul>
       <ul class="navbar-nav ms-auto d-none d-lg-inline-flex">

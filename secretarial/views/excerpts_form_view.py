@@ -2,9 +2,11 @@ from django.views.generic import FormView
 from secretarial.forms import MinuteExcerptsModelForm
 from secretarial.models import MinuteExcerptsModel
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
-class ExcerptsFormView(FormView):
+class ExcerptsFormView(PermissionRequiredMixin, FormView):
+    permission_required = "secretarial.add_meetingminutemodel"
     template_name = 'secretarial/update_excerpt.html'
     form_class = MinuteExcerptsModelForm
 

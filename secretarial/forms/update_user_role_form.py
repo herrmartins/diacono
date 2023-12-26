@@ -6,17 +6,11 @@ from users.models import CustomUser
 class UpdateUserRoleModelForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ("functions", "type")
+        fields = ("type",)
         labels = {
-            "functions": "Funções",
             "type": "Status"
         }
         widgets = {
-            "functions": forms.SelectMultiple(
-                attrs={
-                    "class": "grid-item d-inline form-control my-2",
-                }
-            ),
             "type": forms.Select(
                 attrs={
                     "class": "grid-item d-inline form-control my-2",
@@ -24,7 +18,7 @@ class UpdateUserRoleModelForm(forms.ModelForm):
             ),
         }
 
-    def clean(self):
+"""     def clean(self):
         cleaned_data = super().clean()
         user_type = cleaned_data.get('type')
         functions = cleaned_data.get('functions')
@@ -33,4 +27,4 @@ class UpdateUserRoleModelForm(forms.ModelForm):
             CustomUser.Types.CONGREGATED, CustomUser.Types.SIMPLE_USER
         ) and functions:
             raise ValidationError(
-                "Congregados e usuários simples não podem ter função.")
+                "Congregados e usuários simples não podem ter função.") """

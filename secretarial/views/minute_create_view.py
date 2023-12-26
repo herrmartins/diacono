@@ -2,9 +2,11 @@ from django.views.generic import CreateView
 from secretarial.forms import MinuteModelForm
 from secretarial.models import MinuteProjectModel
 from secretarial.models import MinuteExcerptsModel
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
-class MinuteCreateView(CreateView):
+class MinuteCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = "secretarial.add_meetingminutemodel"
     form_class = MinuteModelForm
     template_name = "secretarial/created_minute.html"
     context_object_name = "minute"

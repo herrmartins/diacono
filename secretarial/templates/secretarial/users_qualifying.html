@@ -6,9 +6,7 @@
 {% if messages %}
 <ul class="messages">
   {% for message in messages %}
-  <li>
-    {{ message }}
-  </li>
+  <li>{{ message }}</li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -17,33 +15,67 @@
     <p class="fs-3 fw-light">Sessão de usuários</p>
   </div>
   <div class="container">
+    <h6 class="fw-light"> Lista de Membros</h6>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Funções</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in members %}
+        <tr>
+          <td>{{ m.first_name }} {{ m.last_name }}</td>
+          <td>
+            {% if m.is_pastor %}
+            Pastor
+            {% elif m.is_secretary %}
+            Secretário
+            {% elif m.is_treasurer %}
+            Tesoureiro
+            {% else %}
+            {{m.type}}
+            {% endif %}
+          </td>
+
+          <td>
+            <a href="{% url 'secretarial:user-qualify' m.id %}">
+              <img src="{% static 'img/edit-black.svg' %}" class="">
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="container">
     <div class="row">
-      <div class="col-4">
+    <div class="col-8 mx-auto">
+    <h6 class="fw-light"> Lista de usuários simples, contratos e congregados...</h6>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+      <tbody>
         {% for u in users %}
-        <div class="row">
-          <div class="col">
-            <p>{{u.first_name}} {{u.last_name}}</p>
-          </div>
-          <div class="col"><a href="{% url 'secretarial:user-qualify' u.id %}"><img src="{% static 'img/edit-black.svg' %}"
-                class=""></a></div>
-        </div>
-
+        <tr>
+          <td>{{ u.first_name }} {{ u.last_name }}</td>
+          <td>
+            <a href="{% url 'secretarial:user-qualify' u.id %}">
+              <img src="{% static 'img/edit-black.svg' %}" class="">
+            </a>
+          </td>
+        </tr>
         {% endfor %}
-      </div>
-      <div class="col">
-        {% for u in users %}
-        <div class="row">
-
-          {% for ur in u.id|get_user_role %}
-          <div class="col-3">
-            <p>{{ur}}</p>
-          </div>
-
-          {% endfor %}
-        </div>
-        {% endfor %}
-      </div>
+      </tbody>
+    </table>
     </div>
+  </div>
   </div>
 </div>
 {% endblock %}
