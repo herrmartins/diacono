@@ -18,9 +18,9 @@ These features are almost ready for production.
 To set up Diacono on your local environment or server, follow these steps:
 
 1. **Installation:** Clone this repository.
-2. **Dependencies:** Ensure [list of dependencies] is installed.
-3. **Configuration:** Set up database credentials and application settings.
-4. **Run:** Launch the application using [specific commands].
+2. **Dependencies:** Ensure dependencies are installed (requirements.txt).
+3. **Configuration:** 1) Run migrations; 2) py manage.py init_groups (The second step will create permissions groups and set the permissions)
+4. **Run:** Launch the application using py manage.py runserver
 
 ## Technologies Used
 
