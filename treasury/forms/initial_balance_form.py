@@ -19,3 +19,12 @@ class InitialBalanceForm(forms.ModelForm):
         widget=forms.DateInput(attrs={"type": "month", "class": "form-control"}),
         input_formats=["%Y-%m"],
     )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        month = cleaned_data.get("month")
+        print("MÊS:", month)
+        if month is not None and (month.month < 1 or month.month > 12):  # Extract month value for comparison
+            raise forms.ValidationError("Month must be between 1 and 12.")
+
+        return cleaned_data

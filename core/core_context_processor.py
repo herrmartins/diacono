@@ -10,13 +10,13 @@ def context_user_data(request):
     try:
         with open(file_path, "r") as file:
             church_info = json.load(file)
-            print("INFO da igreja:", church_info)
+            # print("INFO da igreja:", church_info)
     except FileNotFoundError:
         print("Erro: File not found")
 
     if request.user.is_authenticated:
         user = CustomUser.objects.get(pk=request.user.id)
-        print("Processador de contexto funcionando..", user, "Função:", user.type)
+        # print("Processador de contexto funcionando..", user, "Função:", user.type)
         return {
             "user": user,
             "church_info": church_info,

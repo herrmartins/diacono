@@ -25,7 +25,7 @@
           <a class="nav-link mx-2" href="{% url 'users:register' %}">Cadastrar</a>
         </li>
         {% endif %}
-        {% if user.is_authenticated and user.is_secretary %}
+        {% if user.is_authenticated and user.is_secretary or user.is_superuser %}
         <li class="nav-item">
           <a class="nav-link mx-2" href="{% url 'core:config' %}">Config</a>
         </li>

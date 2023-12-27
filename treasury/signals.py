@@ -1,8 +1,14 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from treasury.models import MonthlyReportModel, MonthlyTransactionByCategoryModel
+from treasury.models import (
+    MonthlyReportModel,
+    MonthlyTransactionByCategoryModel,
+    MonthlyBalance,
+)
 from .utils import get_aggregate_transactions_by_category
 from dateutil.relativedelta import relativedelta
+from django.utils import timezone
+from datetime import timedelta
 
 
 @receiver(post_save, sender=MonthlyReportModel)
@@ -36,3 +42,34 @@ def save_transactions(transactions_dict, instance, is_positive):
             total_amount=total_amount,
             is_positive=is_positive,
         )
+
+
+@receiver(post_save, sender=MonthlyBalance)
+def create_missing_monthly_balances(sender, instance, created, **kwargs):
+    if created:
+        # Get the month the user saved
+        instance_month = instance.month
+
+        # Get the current date
+        current_date = timezone.now().date()  # Extract date only
+
+        # Loop through from the saved month to the current month
+        while instance_month.year < current_date.year or (
+            instance_month.year == current_date.year
+            and instance_month.month <= current_date.month
+        ):
+            # Check if the MonthlyBalance for the instance_month exists
+            if not MonthlyBalance.objects.filter(month=instance_month).exists():
+                # Create the missing MonthlyBalance
+                is_first = (
+                    instance_month == instance.month
+                )  # Flag only for initial month
+                MonthlyBalance.objects.create(
+                    month=instance_month,
+                    is_first_month=is_first,
+                    balance=instance.balance,
+                )
+
+            # Move to the next month
+            next_month = instance_month.replace(day=1) + timedelta(days=32)
+            instance_month = next_month.replace(day=1)

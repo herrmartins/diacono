@@ -3,6 +3,7 @@ from treasury.models import TransactionModel, MonthlyBalance
 from dateutil.relativedelta import relativedelta
 from datetime import date
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.db.models import Sum
 
 
 class TransactionMonthArchiveView(PermissionRequiredMixin, MonthArchiveView):
@@ -33,6 +34,10 @@ class TransactionMonthArchiveView(PermissionRequiredMixin, MonthArchiveView):
             date__month=context["month"], date__year=context["year"]
         ).order_by("date")
 
+        monthly_sum = transactions.aggregate(total_amount=Sum("amount"))
+        total_amount_monthly_sum = monthly_sum.get("total_amount", 0)
+        formatted_monthly_sum = "{:.2f}".format(total_amount_monthly_sum)
+
         previous_month = date(self.get_year(), self.get_month(), 1)
 
         previous_month += relativedelta(months=-1)
@@ -51,6 +56,7 @@ class TransactionMonthArchiveView(PermissionRequiredMixin, MonthArchiveView):
         context["finance_entries"] = transactions
         context["counter"] = 0
         context["balance"] = previous_month_balance
+        context["monthly_result"] = formatted_monthly_sum
         context["ncd"] = not_current_date
 
         return context

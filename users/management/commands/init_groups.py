@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = "Assigns permissions to user groups"
+    help = "Create permission groups and assigns permissions to them"
 
     def handle(self, *args, **options):
         treasurer_permissions = [
@@ -89,6 +89,10 @@ class Command(BaseCommand):
         )
         pastor_group, created_pastor = Group.objects.get_or_create(name="pastor")
         members_group, created_members = Group.objects.get_or_create(name="members")
+        congregated_group, created_congregated = Group.objects.get_or_create(
+            name="congregated"
+        )
+        users_group, created_users = Group.objects.get_or_create(name="users")
 
         if created_treasurer:
             add_permissions_to_group(treasurer_group, treasurer_permissions)

@@ -1,9 +1,13 @@
 from django import forms
-from django.core.exceptions import ValidationError
+# from django.core.exceptions import ValidationError
 from users.models import CustomUser
 
 
 class UpdateUserRoleModelForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(UpdateUserRoleModelForm, self).__init__(*args, **kwargs)
+        self.fields['type'].widget.attrs['id'] = 'id_type'
+
     class Meta:
         model = CustomUser
         fields = ("type",)
@@ -17,6 +21,7 @@ class UpdateUserRoleModelForm(forms.ModelForm):
                 }
             ),
         }
+
 
 """     def clean(self):
         cleaned_data = super().clean()
