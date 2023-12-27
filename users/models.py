@@ -58,48 +58,52 @@ class CustomUser(AbstractUser):
 
 @receiver(pre_save, sender=CustomUser)
 def update_user_type(sender, instance, **kwargs):
-    congregated_group = Group.objects.get(name='congregated')
-    regular_group = Group.objects.get(name='members')
-    secretarial_group = Group.objects.get(name='secretarial')
-    treasury_group = Group.objects.get(name='treasurer')
-    pastor_group = Group.objects.get(name='pastor')
-
-    instance.groups.clear()
-
-    print("Instance type:", instance.type)
-    print("Is pastor:", instance.is_pastor)
-    print("Is secretary:", instance.is_secretary)
-    print("Is treasurer:", instance.is_treasurer)
-
-    if instance.type in [CustomUser.Types.CONGREGATED, CustomUser.Types.SIMPLE_USER]:
-        instance.error_message = "Congregado não pode ter funções..."
-        instance.is_pastor = False
-        instance.is_secretary = False
-        instance.is_treasurer = False
-        instance.groups.add(congregated_group)
+    if instance.is_superuser:
+        return
     else:
-        if instance.type == CustomUser.Types.REGULAR:
-            instance.groups.add(regular_group)
+        congregated_group = Group.objects.get(name='congregated')
+        regular_group = Group.objects.get(name='members')
+        secretarial_group = Group.objects.get(name='secretarial')
+        treasury_group = Group.objects.get(name='treasurer')
+        pastor_group = Group.objects.get(name='pastor')
 
-        if instance.is_pastor:
-            print("Assigning to pastor group")
-            instance.groups.add(pastor_group)
-        if instance.is_secretary:
-            print("Assigning to secretarial group")
-            instance.groups.add(secretarial_group)
-        if instance.is_treasurer:
-            print("Assigning to treasurer group")
-            instance.groups.add(treasury_group)
+        if instance.id:
+            instance.groups.clear()
 
-        # Check if the user has any function
-        has_any_function = (
-            instance.is_pastor or instance.is_secretary or instance.is_treasurer
-        )
-        print("Has any function:", has_any_function)
-        if has_any_function:
-            instance.type = CustomUser.Types.STAFF
-            instance.is_staff = True
+        print("Instance type:", instance.type)
+        print("Is pastor:", instance.is_pastor)
+        print("Is secretary:", instance.is_secretary)
+        print("Is treasurer:", instance.is_treasurer)
+
+        if instance.type in [CustomUser.Types.CONGREGATED, CustomUser.Types.SIMPLE_USER]:
+            instance.error_message = "Congregado não pode ter funções..."
+            instance.is_pastor = False
+            instance.is_secretary = False
+            instance.is_treasurer = False
+            instance.groups.add(congregated_group)
         else:
-            instance.type = CustomUser.Types.REGULAR
-            instance.is_staff = False
-            instance.groups.add(regular_group)
+            if instance.type == CustomUser.Types.REGULAR:
+                instance.groups.add(regular_group)
+
+            if instance.is_pastor:
+                print("Assigning to pastor group")
+                instance.groups.add(pastor_group)
+            if instance.is_secretary:
+                print("Assigning to secretarial group")
+                instance.groups.add(secretarial_group)
+            if instance.is_treasurer:
+                print("Assigning to treasurer group")
+                instance.groups.add(treasury_group)
+
+            # Check if the user has any function
+            has_any_function = (
+                instance.is_pastor or instance.is_secretary or instance.is_treasurer
+            )
+            print("Has any function:", has_any_function)
+            if has_any_function:
+                instance.type = CustomUser.Types.STAFF
+                instance.is_staff = True
+            else:
+                instance.type = CustomUser.Types.REGULAR
+                instance.is_staff = False
+                instance.groups.add(regular_group)

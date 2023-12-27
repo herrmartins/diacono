@@ -7,5 +7,5 @@ class MinutesProjectListView(PermissionRequiredMixin, ListView):
     permission_required = "secretarial.add_meetingminutemodel"
     model = MinuteProjectModel
     template_name = 'secretarial/list_minutes_projects.html'
-    #ordering = ['-meeting_minute']
+    ordering = ['-created']
     context_object_name = 'minutes'
