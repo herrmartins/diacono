@@ -7,7 +7,7 @@ from django.db.models import Sum
 
 
 class TransactionMonthArchiveView(PermissionRequiredMixin, MonthArchiveView):
-    permission_required = 'treasury.view_transactionmodel'
+    permission_required = "treasury.view_transactionmodel"
     model = TransactionModel
     date_field = "date"
     month_format = "%m"
@@ -33,6 +33,7 @@ class TransactionMonthArchiveView(PermissionRequiredMixin, MonthArchiveView):
         transactions = TransactionModel.objects.filter(
             date__month=context["month"], date__year=context["year"]
         ).order_by("date")
+
 
         monthly_sum = transactions.aggregate(total_amount=Sum("amount"))
         total_amount_monthly_sum = monthly_sum.get("total_amount", 0)

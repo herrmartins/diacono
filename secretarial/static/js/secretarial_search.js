@@ -73,26 +73,29 @@ document.addEventListener("DOMContentLoaded", function() {
           let resultList = document.createElement("ul");
           resultList.classList.add("list-group");
 
-          data.forEach(function(item) {
+          data.forEach(function (item) {
             let displayFields = "";
+            let listItem = document.createElement("li");
+            listItem.classList.add("list-group-item");
+          
             if (searchCategory === "minutes") {
               displayFields = `Presidente: ${item.president} | Data: ${item.meeting_date}`;
-
+          
               let link = document.createElement("a");
               link.textContent = "Ver Ata";
               link.href = `/secretarial/meeting/detail/${item.id}`;
-
-              let listItem = document.createElement("li");
-              listItem.classList.add("list-group-item");
+          
               listItem.appendChild(document.createTextNode(displayFields + " "));
               listItem.appendChild(link);
-
-              resultList.appendChild(listItem);
             } else if (searchCategory === "templates") {
               displayFields = item.title;
+              listItem.appendChild(document.createTextNode(displayFields));
             } else if (searchCategory === "users" || searchCategory === "members") {
               displayFields = `${item.first_name} ${item.last_name}`;
+              listItem.appendChild(document.createTextNode(displayFields));
             }
+          
+            resultList.appendChild(listItem); // Append the constructed listItem to resultList
           });
 
           cardBody.appendChild(resultList);

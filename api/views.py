@@ -185,7 +185,7 @@ def unifiedSearch(request):
             | Q(last_name__icontains=search_criterion),
         )
         serialized_data = CustomUserSerializer(queryset, many=True)
-
+        print(serialized_data.data)
         return Response(serialized_data.data)
 
     elif search_category == "minutes":
@@ -217,5 +217,7 @@ def unifiedSearch(request):
             {"error": "Categoria de busca inválida..."},
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+    print(serialized_data.data)
 
     return Response(serialized_data.data)

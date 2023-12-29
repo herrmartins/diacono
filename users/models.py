@@ -3,9 +3,10 @@ from django.db import models
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import Group
+from django.db import transaction
 
 
 class CustomUser(AbstractUser):
@@ -56,22 +57,42 @@ class CustomUser(AbstractUser):
         return f"{self.first_name} {self.last_name} ({self.username})"
 
 
-@receiver(pre_save, sender=CustomUser)
-def update_user_type(sender, instance, **kwargs):
-    regular_group = Group.objects.get(name="members")
-    secretarial_group = Group.objects.get(name="secretary")
-    treasury_group = Group.objects.get(name="treasurer")
-    pastor_group = Group.objects.get(name="pastor")
-    users_group = Group.objects.get(name="users")
+@receiver(post_save, sender=CustomUser)
+def set_initial_user_type(sender, instance, created, **kwargs):
+    # Retrieve or create necessary groups
+    regular_group, _ = Group.objects.get_or_create(name="members")
+    secretarial_group, _ = Group.objects.get_or_create(name="secretary")
+    treasury_group, _ = Group.objects.get_or_create(name="treasurer")
+    pastor_group, _ = Group.objects.get_or_create(name="pastor")
+    users_group, _ = Group.objects.get_or_create(name="users")
+
+    instance.groups.clear()
+
+    has_any_function = (
+        instance.is_pastor or instance.is_secretary or instance.is_treasurer
+    )
+    if not has_any_function and not (
+        instance.type
+        in [
+            CustomUser.Types.CONGREGATED,
+            CustomUser.Types.SIMPLE_USER,
+        ]
+    ):
+        instance.type = CustomUser.Types.REGULAR
+    elif has_any_function and not (
+        instance.type
+        in [
+            CustomUser.Types.CONGREGATED,
+            CustomUser.Types.SIMPLE_USER,
+        ]
+    ):
+        instance.type = CustomUser.Types.STAFF
+    else:
+        print("TO NO ELSE")
 
     if instance.is_superuser:
         return
     else:
-        print("Instance type:", instance.type)
-        print("Is pastor:", instance.is_pastor)
-        print("Is secretary:", instance.is_secretary)
-        print("Is treasurer:", instance.is_treasurer)
-
         if instance.type in [
             CustomUser.Types.CONGREGATED,
             CustomUser.Types.SIMPLE_USER,
@@ -80,30 +101,40 @@ def update_user_type(sender, instance, **kwargs):
             instance.is_pastor = False
             instance.is_secretary = False
             instance.is_treasurer = False
+            instance.groups.clear()
             instance.groups.add(users_group)
         else:
             if instance.type == CustomUser.Types.REGULAR:
                 instance.groups.add(regular_group)
-
-            if instance.is_pastor:
-                print("Assigning to pastor group")
-                instance.groups.add(pastor_group)
-            if instance.is_secretary:
-                print("Assigning to secretarial group")
-                instance.groups.add(secretarial_group)
-            if instance.is_treasurer:
-                print("Assigning to treasurer group")
-                instance.groups.add(treasury_group)
-
-            # Check if the user has any function
-            has_any_function = (
-                instance.is_pastor or instance.is_secretary or instance.is_treasurer
-            )
-            print("Has any function:", has_any_function)
-            if has_any_function:
+            elif instance.is_pastor:
+                if instance.is_secretary and instance.is_treasurer:
+                    instance.groups.add(pastor_group, secretarial_group, treasury_group)
+                elif instance.is_secretary:
+                    instance.groups.add(pastor_group, secretarial_group)
+                elif instance.is_treasurer:
+                    instance.groups.add(pastor_group, treasury_group)
+                else:
+                    instance.groups.add(pastor_group)
                 instance.type = CustomUser.Types.STAFF
-                instance.is_staff = True
-            else:
-                instance.type = CustomUser.Types.REGULAR
-                instance.is_staff = False
-                instance.groups.add(regular_group)
+            elif instance.is_secretary:
+                if instance.is_treasurer:
+                    instance.groups.add(secretarial_group, treasury_group)
+                else:
+                    instance.groups.add(secretarial_group)
+                instance.type = CustomUser.Types.STAFF
+            elif instance.is_treasurer:
+                instance.groups.add(treasury_group)
+                instance.type = CustomUser.Types.STAFF
+
+
+        if instance.type == CustomUser.Types.STAFF:
+            instance.is_staff = True
+        else:
+            instance.is_staff = False
+
+    with transaction.atomic():
+        # Disable the post_save signal temporarily while saving
+        post_save.disconnect(set_initial_user_type, sender=CustomUser)
+        instance.save()
+        # Reconnect the signal after saving
+        post_save.connect(set_initial_user_type, sender=CustomUser)

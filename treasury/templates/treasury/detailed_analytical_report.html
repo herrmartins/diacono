@@ -17,9 +17,19 @@
             <p><strong>Transações negativas:</strong>
                 <span class="text-danger fw-bold">{{ report.total_negative_transactions }}</span>
             </p>
-            <p><strong>Em dinheiro:</strong> {{ report.in_cash }}</p>
-            <p><strong>Em poupança:</strong> {{ report.in_current_account }}</p>
-            <p><strong>Em conta-corrente:</strong> {{ report.in_savings_account }}</p>
+            {% if report.in_cash != 0 or report.in_current_account != 0 or report.in_savings_account != 0 %}
+            <p><strong>Em dinheiro:</strong> {% if report.in_cash != 0 %}{{ report.in_cash }}{% endif %}</p>
+            <p><strong>Em poupança:</strong> {% if report.in_current_account != 0 %}{{ report.in_current_account }}{% endif %}</p>
+            <p><strong>Em conta-corrente:</strong> {% if report.in_savings_account != 0 %}{{ report.in_savings_account }}{% endif %}</p>
+        {% else %}
+            <p><strong>Saldo:</strong>
+            {% if report.total_balance >= 0 %}
+                <span class="text-success fw-bold">{{ report.total_balance }}</span>
+            {% else %}
+                <span class="text-danger fw-bold">{{ report.total_balance }}</span>
+            {% endif %}
+            </p>
+        {% endif %}
             <p><strong>Saldo:</strong>
                 {% if report.total_balance >= 0 %}
                 <span class="text-success fw-bold">{{ report.total_balance }}</span>

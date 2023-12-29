@@ -1,10 +1,11 @@
-{% extends 'core/base.html' %} {% load index %} {% load static%} {% if messages %}
+{% extends 'core/base.html' %} {% load index %} {% load static%} {% block content %}
+{% if messages %}
 <ul class="messages">
   {% for message in messages %}
   <li>{{ message }}</li>
   {% endfor %}
 </ul>
-{% endif %} {% block content %}
+{% endif %} 
 <div class="container text-center">
   <p class="fs-3 fw-light">{{church_info.name}}</p>
   <p class="fs-3 fw-light">Relatório detalhado de {{month}}/{{year}}</p>
@@ -27,7 +28,6 @@
 <div class="container-fluid col-10">
   <div class="card">
     <div class="card-header">Mês atual:</div>
-
     <div class="card-body">
       <div class="container">
         <table class="table">
@@ -37,7 +37,7 @@
               <th scope="col">Descrição</th>
               <th scope="col">Valor</th>
               <th scope="col">Subtotal</th>
-              <th scope="col">Controle</th>
+              {% if user.is_treasurer %}<th scope="col">Controle</th> {% endif %}
             </tr>
           </thead>
           <tbody>
@@ -59,6 +59,7 @@
                   {{ subtotal|index:forloop.counter0 }}
                 </p>
               </td>
+              {% if user.is_treasurer %}
               <td>
                 <div class="container-fluid">
                   <a
@@ -85,6 +86,7 @@
                   </form>
                 </div>
               </td>
+              {% endif %}
             </tr>
 
             {% endfor %}

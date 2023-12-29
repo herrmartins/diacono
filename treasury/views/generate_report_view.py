@@ -6,17 +6,20 @@ from treasury.models import (
 from treasury.forms import GenerateFinanceReportModelForm
 from dateutil.relativedelta import relativedelta
 from datetime import date
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from datetime import datetime
 from treasury.utils import (
     get_aggregate_transactions_by_category,
     get_total_transactions_amount,
 )
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from core.core_context_processor import context_user_data
+import calendar
+import locale
 
 
 class GenerateMonthlyReportView(PermissionRequiredMixin, TemplateView):
-    permission_required = "add_monthlyreportmodel"
+    permission_required = "treasury.add_monthlyreportmodel"
     template_name = "treasury/monthly_report_generator.html"
 
     def get(self, request, month, year, *args, **kwargs):
@@ -37,9 +40,18 @@ class GenerateMonthlyReportView(PermissionRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+
         year = self.kwargs.get("year")
         month = self.kwargs.get("month")
         previous_month_balance = 0
+
+        month_in_text = calendar.month_name[int(month)]
+
+        context_data = context_user_data(self.request)
+        church_info = context_data.get("church_info")
+
+        print("GENERATOR VIEW:", church_info, month_in_text)
 
         report_month = date(year, month, 1)
 
@@ -87,6 +99,8 @@ class GenerateMonthlyReportView(PermissionRequiredMixin, TemplateView):
             "total_negative_transactions": context["total_ntransactions"],
             "total_balance": balance_for_calc,
         }
-
+        context["year"] = year
+        context["month_in_text"] = month_in_text
+        context["church_info"] = church_info
         context["form"] = GenerateFinanceReportModelForm(initial=initial_data)
         return context

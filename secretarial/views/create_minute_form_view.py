@@ -14,24 +14,26 @@ class CreateMinuteFormView(PermissionRequiredMixin, FormView):
     def get_initial(self):
         initial = super().get_initial()
 
-        if 'project_pk' in self.kwargs:
+        if "project_pk" in self.kwargs:
             try:
                 minute_data = MinuteProjectModel.objects.get(
-                    pk=self.kwargs.get("project_pk"))
+                    pk=self.kwargs.get("project_pk")
+                )
                 initial["president"] = minute_data.president
                 initial["secretary"] = minute_data.secretary
                 initial["meeting_date"] = minute_data.meeting_date.isoformat()
-                initial["number_of_attendees"] = minute_data.number_of_attendees
+                initial["number_of_atendees"] = minute_data.number_of_attendees
                 initial["body"] = minute_data.body
                 initial["agenda"] = minute_data.meeting_agenda.all()
             except MinuteProjectModel.DoesNotExist:
                 # Handle the case where the project PK does not exist
                 return redirect("secretarial:home")
 
-        elif 'template_pk' in self.kwargs:
+        elif "template_pk" in self.kwargs:
             try:
                 minute_data = MinuteTemplateModel.objects.get(
-                    pk=self.kwargs.get("template_pk"))
+                    pk=self.kwargs.get("template_pk")
+                )
                 initial["body"] = minute_data.body
                 initial["agenda"] = minute_data.agenda.all()
             except MinuteTemplateModel.DoesNotExist:
@@ -47,7 +49,8 @@ class CreateMinuteFormView(PermissionRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
 
         context["excerpts_list"] = MinuteExcerptsModel.objects.all().order_by(
-            "-times_used")
+            "-times_used"
+        )
         print(context["excerpts_list"])
 
         return context

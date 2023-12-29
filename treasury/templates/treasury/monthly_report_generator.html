@@ -4,8 +4,8 @@
 <script src="{% static 'js/validate_report.js' %}" defer></script>
 <div class="container">
     <div class="container">
-        <p class="text-center">IGREJA BATISTA REGULAR DE CIDADE SATÉLITE</p>
-        <p class="text-center">GERAR RELATÓRIO ANALÍTICO de {{month}}/{{year}}</p>
+        <p class="text-center">{{church_info.name}} - {{church_info.CNPJ}}</p>
+        <p class="text-center">Gerar relatório analítico de {{month_in_text}} de {{year}}</p>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-4 col-md-4 col-6 mb-4">

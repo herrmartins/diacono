@@ -7,7 +7,7 @@ class UserProfileView(PermissionRequiredMixin, DetailView):
     model = CustomUser
     template_name = "users/user_profile.html"
     context_object_name = "user_object"
-    permission_required = 'users.view_users'
+    permission_required = 'users.view_customuser'
 
     def has_permission(self):
         user = self.request.user

@@ -31,14 +31,14 @@ class GenerateFinanceReportModelForm(forms.ModelForm):
         self.fields["total_negative_transactions"].widget = forms.NumberInput(
             attrs={"class": "form-control bg-light", "readonly": True}
         )
-        self.fields["in_cash"].widget = forms.NumberInput(
-            attrs={"class": "form-control"}
+        self.fields["in_cash"].widget = forms.TextInput(
+            attrs={"class": "form-control", "type": "number", "step": "0.01"}
         )
-        self.fields["in_current_account"].widget = forms.NumberInput(
-            attrs={"class": "form-control"}
+        self.fields["in_current_account"].widget = forms.TextInput(
+            attrs={"class": "form-control", "type": "number", "step": "0.01"}
         )
-        self.fields["in_savings_account"].widget = forms.NumberInput(
-            attrs={"class": "form-control"}
+        self.fields["in_savings_account"].widget = forms.TextInput(
+            attrs={"class": "form-control", "type": "number", "step": "0.01"}
         )
         self.fields["total_balance"].widget = forms.NumberInput(
             attrs={"class": "form-control bg-light", "readonly": True}

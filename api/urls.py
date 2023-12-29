@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path("", views.getData),
+    path("<int:pk>", views.getDetailedData),
     path("users", views.SearchUsersListCreateAPIView.as_view(), name="search-users"),
     path(
         "members", views.SearchMembersListCreateAPIView.as_view(), name="search-members"

@@ -19,11 +19,10 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">{{ transaction.description }}</h5>
+                    <h5 class="card-title">{{ transaction.description }} - {{ transaction.category }}</h5>
                     <p class="card-text">
                     <p>Date: {{ transaction.date }}</p>
                     <p>Amount: R$ {{ transaction.amount }}</p>
-                    <p>Category: {{ transaction.category }}</p>
                     </p>
                 </div>
             </div>
