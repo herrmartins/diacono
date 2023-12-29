@@ -86,7 +86,8 @@
         <div class="col-8">
           <p class="fw-light text-center">Lista de Atas</p>
           {% for m in minutes %}
-          <p><a href="{% url 'secretarial:minute-detail-view' m.pk %}">{{ m }}</a></p></p>
+          <p><a href="{% url 'secretarial:minute-detail-view' m.pk %}">{{ m }}</a></p>
+          </p>
           {% endfor %}
         </div>
       </div>

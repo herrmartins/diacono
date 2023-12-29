@@ -27,9 +27,6 @@ def post_save_monthly_report(sender, instance, created, **kwargs):
             year, month, False
         )
 
-        print("TRANSAÇÕES POSITIVAS NO POST_SAVE:", positive_transactions_dict)
-        print("TRANSAÇÕES NEGATIVAS NO POST_SAVE:", negative_transactions_dict)
-
         save_transactions(positive_transactions_dict, instance, is_positive=True)
         save_transactions(negative_transactions_dict, instance, is_positive=False)
 

@@ -1,0 +1,2 @@
+from .user_qualifying_test_cases import UsersQualifyingListViewTests
+from .secretarial_home_tests import SecretarialHomeViewTests

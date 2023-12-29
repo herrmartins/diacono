@@ -18,7 +18,6 @@ class SecretarialHomeView(PermissionRequiredMixin, TemplateView):
             type=CustomUser.Types.CONGREGATED
         ).count()
 
-        print("Membros:", number_of_members, "Visitantes:", number_of_visitors)
         context["number_of_members"] = number_of_members
         context["number_of_visitors"] = number_of_visitors
         return context

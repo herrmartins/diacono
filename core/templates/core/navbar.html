@@ -30,23 +30,23 @@
           <a class="nav-link mx-2" href="{% url 'core:config' %}">Config</a>
         </li>
         {% endif %}
-
+        {% if user.is_staff %}
         <li class="nav-item dropdown">
           <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
             data-bs-toggle="dropdown" aria-expanded="false">
             Operações
           </a>
+
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <li><a class="dropdown-item" href="{% url 'secretarial:home' %}">Secretaria</a></li>
             <li><a class="dropdown-item" href="{% url 'treasury:home' %}">Tesouraria</a>
               <ul class="dropdown-submenu">
                 <li><a class="dropdown-item" href="{% url 'treasury:list-financial-reports' %}">Relatórios</a></li>
-                <li><a class="dropdown-item" href="#">Option 2</a></li>
               </ul>
             </li>
         </li>
       </ul>
-
+      {% endif %}
       </li>
       </ul>
       <ul class="navbar-nav ms-auto d-none d-lg-inline-flex">

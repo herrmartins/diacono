@@ -10,11 +10,11 @@
           User Profile
         </div>
         <div class="card-body">
-      <h5 class="card-title">Nome: {{user.first_name}} {{user.last_name}}</h5>
-      <p class="card-text">Email: {{user.email}}</p>
-      <p class="card-text">Endereço: {{user.address}}</p>
-      <p class="card-text">Telefone: {{user.phone_number}}
-        {% if user.is_whatsapp %}
+      <h5 class="card-title">Nome: {{user_object.first_name}} {{user_object.last_name}}</h5>
+      <p class="card-text">Email: {{user_object.email}}</p>
+      <p class="card-text">Endereço: {{user_object.address}}</p>
+      <p class="card-text">Telefone: {{user_object.phone_number}}
+        {% if user_object.is_whatsapp %}
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp"
       viewBox="0 0 16 16">
       <path
@@ -22,11 +22,11 @@
     </svg>
         {% endif %}
       </p>
-      <p class="card-text">Data de Nascimento: {{user.date_of_birth}}</p>
-      <p class="card-text">Sobre: {{user.about}}</p>
-      <p class="card-text ">Função: {% if user.is_pastor %}<p class="fw-light">Pastor</p>{% endif %}{% if user.is_secretary %}<p class="fw-light">Secretário</p>{% endif %}{% if user.is_treasurer %}<p class="fw-light">Tesoureiro</p>{% endif %}</p>
+      <p class="card-text">Data de Nascimento: {{user_object.date_of_birth}}</p>
+      <p class="card-text">Sobre: {{user_object.about}}</p>
+      <p class="card-text ">Função: {% if user_object.is_pastor %}<p class="fw-light">Pastor</p>{% endif %}{% if user_object.is_secretary %}<p class="fw-light">Secretário</p>{% endif %}{% if user_object.is_treasurer %}<p class="fw-light">Tesoureiro</p>{% endif %}</p>
       <div class="text-center">
-        <a href="{% url 'users:user-profile-update' user.id %}" class="btn btn-warning">Atualizar cadastro</a>
+        <a href="{% url 'users:user-profile-update' user_object.id %}" class="btn btn-warning">Atualizar cadastro</a>
         <a href="{% url 'users:change-user-password' %}" class="btn btn-warning">Alterar senha</a>
       </div>
         </div>

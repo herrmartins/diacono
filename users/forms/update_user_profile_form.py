@@ -60,9 +60,9 @@ class UpdateUserProfileModelForm(ModelForm):
                     "placeholder": "Phone",
                 }
             ),
-            "date_of_birth": DateInput(
+            "date_of_birth": forms.TextInput(
                 attrs={
-                    "class": "form-control my-2",
+                    "class": "datepicker form-control",
                     "type": "date",
                 },
             ),
@@ -70,6 +70,7 @@ class UpdateUserProfileModelForm(ModelForm):
                 attrs={
                     "class": "form-control my-2",
                     "placeholder": "Sobre você...",
-                }
+                },
             ),
         }
+        # input_formats = {"date_of_birth": ["%Y-%m-%d"]}
