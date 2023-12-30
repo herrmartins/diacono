@@ -67,7 +67,6 @@ def set_initial_user_type(sender, instance, created, **kwargs):
     users_group, _ = Group.objects.get_or_create(name="users")
 
     instance.groups.clear()
-    print(instance.type)
     has_any_function = (
         instance.is_pastor or instance.is_secretary or instance.is_treasurer
     )
@@ -130,7 +129,6 @@ def set_initial_user_type(sender, instance, created, **kwargs):
             instance.is_staff = False
 
     user_groups = instance.groups.all()
-    print("GRUPO DO USUÁRIO:", user_groups)
 
     with transaction.atomic():
         # Disable the post_save signal temporarily while saving

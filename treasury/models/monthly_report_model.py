@@ -20,12 +20,12 @@ class MonthlyReportModel(BaseModel):
     in_savings_account = models.DecimalField(
         max_digits=10, decimal_places=2, default=0.0
     )
-    total_balance = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0.0)
+    monthly_result = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    total_balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
     class Meta:
         verbose_name = "Relatório Financeiro Analítico"
         verbose_name_plural = "Relatórios Financeiros Analíticos"
 
     def __str__(self):
-        return f'{self.month}'
+        return f"{self.month}"

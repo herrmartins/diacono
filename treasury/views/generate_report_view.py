@@ -16,6 +16,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from core.core_context_processor import context_user_data
 import calendar
 import locale
+from decimal import Decimal
 
 
 class GenerateMonthlyReportView(PermissionRequiredMixin, TemplateView):
@@ -40,7 +41,7 @@ class GenerateMonthlyReportView(PermissionRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+        locale.setlocale(locale.LC_TIME, "pt_BR.UTF-8")
 
         year = self.kwargs.get("year")
         month = self.kwargs.get("month")
@@ -82,14 +83,18 @@ class GenerateMonthlyReportView(PermissionRequiredMixin, TemplateView):
             year, month, False
         )
 
-        context["p_transactions"] = positive_transactions_dict
-        context["total_ptransactions"] = get_total_transactions_amount(
-            positive_transactions_dict
+        positive_transactions_amount = Decimal(
+            get_total_transactions_amount(positive_transactions_dict)
         )
-        context["n_transactions"] = negative_transactions_dict
-        context["total_ntransactions"] = get_total_transactions_amount(
+        negative_transactions_amount = Decimal(get_total_transactions_amount(
             negative_transactions_dict
-        )
+        ))
+        monthly_result = positive_transactions_amount + negative_transactions_amount
+
+        context["p_transactions"] = positive_transactions_dict
+        context["total_ptransactions"] = positive_transactions_amount
+        context["n_transactions"] = negative_transactions_dict
+        context["total_ntransactions"] = negative_transactions_amount
         context["pm_balance"] = previous_month_balance
 
         initial_data = {
@@ -97,9 +102,12 @@ class GenerateMonthlyReportView(PermissionRequiredMixin, TemplateView):
             "previous_month_balance": previous_month_balance,
             "total_positive_transactions": context["total_ptransactions"],
             "total_negative_transactions": context["total_ntransactions"],
+            "monthly_result": monthly_result,
             "total_balance": balance_for_calc,
         }
-        context["year"] = year
+        context["monthly_result"] = Decimal(
+            get_total_transactions_amount(positive_transactions_dict)
+        ) + Decimal(get_total_transactions_amount(negative_transactions_dict))
         context["month_in_text"] = month_in_text
         context["church_info"] = church_info
         context["form"] = GenerateFinanceReportModelForm(initial=initial_data)

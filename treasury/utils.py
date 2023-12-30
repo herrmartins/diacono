@@ -1,4 +1,4 @@
-from treasury.models import TransactionModel
+from treasury.models import TransactionModel, CategoryModel
 from collections import defaultdict
 from decimal import Decimal
 import calendar
@@ -11,7 +11,6 @@ def get_aggregate_transactions_by_category(year, month, is_positive=True):
         "date__month": month,
         "is_positive": is_positive,
     }
-
     transactions = TransactionModel.objects.filter(
         **transactions_filter
     ).select_related("category")
@@ -20,7 +19,7 @@ def get_aggregate_transactions_by_category(year, month, is_positive=True):
 
     for transaction in transactions:
         category_name = (
-            transaction.category.name if transaction.category else "Sem categoria"
+            transaction.category.name if transaction.category else "outros"
         )
         # Ensure the amount is converted to Decimal or float
         transactions_by_category[category_name] += Decimal(transaction.amount)

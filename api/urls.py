@@ -2,20 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.getData),
-    path("<int:pk>", views.getDetailedData),
-    path("users", views.SearchUsersListCreateAPIView.as_view(), name="search-users"),
-    path(
-        "members", views.SearchMembersListCreateAPIView.as_view(), name="search-members"
-    ),
-    path(
-        "templates",
-        views.SearchTemplatesListCreateAPIView.as_view(),
-        name="search-templates",
-    ),
-    path(
-        "minutes", views.SearchMinutesListCreateAPIView.as_view(), name="search-minutes"
-    ),
+    path("", views.getData, name="get-data"),
+    path("<int:pk>", views.getDetailedData, name="get-detailed-data"), 
     path(
         "transactions",
         views.TransactionCatListAPIView.as_view(),

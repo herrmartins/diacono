@@ -1,2 +1,6 @@
 from .user_qualifying_test_cases import UsersQualifyingListViewTests
 from .secretarial_home_tests import SecretarialHomeViewTests
+from .minute_create_tests import MinuteCreateViewTest
+from .pdf_utils_tests import RenderToPDFTestCase
+from .date_to_words_tests import TestDateToWords
+from .generate_pdf_tests import GeneratePDFViewTestCase

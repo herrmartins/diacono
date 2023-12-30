@@ -11,6 +11,4 @@ class TransactionUpdateView(PermissionRequiredMixin, UpdateView):
     form_class = TransactionForm
     template_name = "treasury/transaction_updated.html"
     context_object_name = "transaction"
-
-    def get_success_url(self):
-        return reverse('treasury:transaction-detail', kwargs={'pk': self.object.pk})
+    success_url = "/treasury/"

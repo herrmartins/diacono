@@ -76,60 +76,6 @@ def getDetailedData(request, pk):
     return Response(serializer.data)
 
 
-class SearchUsersListCreateAPIView(generics.ListCreateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
-
-    def post(self, request, *args, **kwargs):
-        search_criterion = request.data.get("searched")
-        queryset = CustomUser.objects.filter(
-            Q(first_name__icontains=search_criterion)
-            | Q(last_name__icontains=search_criterion)
-        )
-        serialized_data = CustomUserSerializer(queryset, many=True)
-        return Response(serialized_data.data)
-
-
-class SearchMembersListCreateAPIView(generics.ListCreateAPIView):
-    queryset = CustomUser.objects.filter(
-        Q(type=CustomUser.Types.REGULAR) | Q(type=CustomUser.Types.STAFF)
-    )
-    serializer_class = CustomUserSerializer
-
-    def post(self, request, *args, **kwargs):
-        search_criterion = request.data.get("searched")
-        queryset = self.queryset.filter(
-            Q(first_name__icontains=search_criterion)
-            | Q(last_name__icontains=search_criterion)
-        )
-        serialized_data = CustomUserSerializer(queryset, many=True)
-        return Response(serialized_data.data)
-
-
-class SearchMinutesListCreateAPIView(generics.ListCreateAPIView):
-    queryset = MeetingMinuteModel.objects.all()
-    serializer_class = MeetingMinuteModelSerializer
-
-    def post(self, request, *args, **kwargs):
-        search_criterion = request.data.get("searched")
-        queryset = MeetingMinuteModel.objects.filter(body__icontains=search_criterion)
-        serialized_data = MeetingMinuteModelSerializer(queryset, many=True)
-        return Response(serialized_data.data)
-
-
-class SearchTemplatesListCreateAPIView(generics.ListCreateAPIView):
-    queryset = MinuteTemplateModel.objects.all()
-    serializer_class = MinuteTemplateModelSerializer
-
-    def post(self, request, *args, **kwargs):
-        search_criterion = request.data.get("searched")
-        queryset = MinuteTemplateModel.objects.filter(
-            Q(title__icontains=search_criterion) | Q(body__icontains=search_criterion)
-        )
-        serialized_data = MinuteTemplateModelSerializer(queryset, many=True)
-        return Response(serialized_data.data)
-
-
 class TransactionCatListAPIView(generics.ListAPIView):
     serializer_class = TransactionCatModelSerializer
 
@@ -148,7 +94,6 @@ class TransactionsCreateAPIView(generics.CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         serializer = TransactionModelSerializer(data=request.data)
-        print("DADOS ENVIADOS:", request.data)
 
         # Validate the data
         if serializer.is_valid():
@@ -161,7 +106,6 @@ class TransactionsCreateAPIView(generics.CreateAPIView):
             # Return a successful response with the serialized data
             return Response(serialized_data.data, status=status.HTTP_201_CREATED)
         else:
-            # If data is not valid, return a response with error details
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -185,7 +129,6 @@ def unifiedSearch(request):
             | Q(last_name__icontains=search_criterion),
         )
         serialized_data = CustomUserSerializer(queryset, many=True)
-        print(serialized_data.data)
         return Response(serialized_data.data)
 
     elif search_category == "minutes":
@@ -217,7 +160,5 @@ def unifiedSearch(request):
             {"error": "Categoria de busca inválida..."},
             status=status.HTTP_400_BAD_REQUEST,
         )
-
-    print(serialized_data.data)
 
     return Response(serialized_data.data)

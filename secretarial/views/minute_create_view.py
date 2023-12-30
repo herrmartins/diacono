@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 class MinuteCreateView(PermissionRequiredMixin, CreateView):
     permission_required = "secretarial.add_meetingminutemodel"
     form_class = MinuteModelForm
-    template_name = "secretarial/created_minute.html"
+    template_name = "secretarial/minute_created.html"
     context_object_name = "minute"
 
     def get_initial(self):
@@ -16,7 +16,6 @@ class MinuteCreateView(PermissionRequiredMixin, CreateView):
         if self.kwargs.get("pk"):
             minute_data = MinuteProjectModel.objects.get(
                 pk=self.kwargs.get("pk"))
-            print(self.kwargs)
             initial["president"] = minute_data.president
             initial["secretary"] = minute_data.secretary
             initial["meeting_date"] = minute_data.meeting_date.isoformat()
@@ -30,6 +29,5 @@ class MinuteCreateView(PermissionRequiredMixin, CreateView):
 
         context["excerpts_list"] = MinuteExcerptsModel.objects.all().order_by(
             "-times_used")
-        print(context["excerpts_list"])
 
         return context

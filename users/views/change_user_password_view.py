@@ -2,8 +2,6 @@ from django.contrib.auth.views import PasswordChangeView
 from users.forms import ChangeUserPasswordForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
-from users.models import CustomUser
 
 
 class ChangeUserPasswordView(LoginRequiredMixin, PasswordChangeView):

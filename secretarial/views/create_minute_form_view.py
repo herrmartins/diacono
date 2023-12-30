@@ -51,6 +51,5 @@ class CreateMinuteFormView(PermissionRequiredMixin, FormView):
         context["excerpts_list"] = MinuteExcerptsModel.objects.all().order_by(
             "-times_used"
         )
-        print(context["excerpts_list"])
 
         return context

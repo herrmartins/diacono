@@ -22,6 +22,13 @@
             <p><strong>Em poupança:</strong> {% if report.in_current_account != 0 %}{{ report.in_current_account }}{% endif %}</p>
             <p><strong>Em conta-corrente:</strong> {% if report.in_savings_account != 0 %}{{ report.in_savings_account }}{% endif %}</p>
         {% else %}
+        <p><strong>Resultado mensal:</strong>
+            {% if report.monthly_result >= 0 %}
+            <span class="text-success fw-bold">{{ report.monthly_result }}</span>
+            {% else %}
+            <span class="text-danger fw-bold">{{ report.monthly_result }}</span>
+            {% endif %}
+        </p>
             <p><strong>Saldo:</strong>
             {% if report.total_balance >= 0 %}
                 <span class="text-success fw-bold">{{ report.total_balance }}</span>
@@ -30,13 +37,7 @@
             {% endif %}
             </p>
         {% endif %}
-            <p><strong>Saldo:</strong>
-                {% if report.total_balance >= 0 %}
-                <span class="text-success fw-bold">{{ report.total_balance }}</span>
-                {% else %}
-                <span class="text-danger fw-bold">{{ report.total_balance }}</span>
-                {% endif %}
-            </p>
+ 
         </div>
         <div class="col-md-6">
             <h2>Transações mensais por categoria</h2>

@@ -21,3 +21,6 @@ class TransactionEditHistory(BaseModel):
     class Meta:
         verbose_name = "Histórico de Edição de Transação"
         verbose_name_plural = "Históricos de Edição de Transações"
+
+    def __str__(self):
+        return f"{self.original_description} - {self.edited_description} - {self.original_amount} - {self.edited_amount}"
