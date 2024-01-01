@@ -5,6 +5,13 @@ from django.forms.widgets import DateInput
 
 
 class UpdateUserProfileModelForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        initial_date = self.initial.get("date_of_birth")
+        if initial_date:
+            self.initial["date_of_birth"] = initial_date.strftime("%Y-%m-%d")
+
     class Meta:
         model = CustomUser
         fields = (
@@ -60,7 +67,7 @@ class UpdateUserProfileModelForm(ModelForm):
                     "placeholder": "Phone",
                 }
             ),
-            "date_of_birth": forms.TextInput(
+            "date_of_birth": DateInput(
                 attrs={
                     "class": "datepicker form-control",
                     "type": "date",
@@ -73,4 +80,3 @@ class UpdateUserProfileModelForm(ModelForm):
                 },
             ),
         }
-        # input_formats = {"date_of_birth": ["%Y-%m-%d"]}

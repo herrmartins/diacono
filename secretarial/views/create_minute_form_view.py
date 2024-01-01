@@ -1,15 +1,33 @@
+from typing import Any
 from django.views.generic import FormView
 from secretarial.forms import MinuteModelForm
 from secretarial.models import MinuteProjectModel, MinuteTemplateModel
 from secretarial.models import MinuteExcerptsModel
 from django.shortcuts import redirect
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.shortcuts import redirect
 
 
 class CreateMinuteFormView(PermissionRequiredMixin, FormView):
     permission_required = "secretarial.add_meetingminutemodel"
     template_name = "secretarial/minute_creation.html"
     form_class = MinuteModelForm
+
+    def dispatch(self, request, *args, **kwargs):
+        if "project_pk" in self.kwargs:
+            try:
+                MinuteProjectModel.objects.get(pk=self.kwargs.get("project_pk"))
+            except MinuteProjectModel.DoesNotExist:
+                return redirect("secretarial:home")
+        elif "template_pk" in self.kwargs:
+            try:
+                MinuteTemplateModel.objects.get(pk=self.kwargs.get("template_pk"))
+            except MinuteTemplateModel.DoesNotExist:
+                return redirect("secretarial:home")
+        else:
+            return redirect("secretarial:home")
+
+        return super().dispatch(request, *args, **kwargs)
 
     def get_initial(self):
         initial = super().get_initial()

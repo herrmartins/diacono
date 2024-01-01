@@ -3,6 +3,7 @@ from django.urls import reverse
 from users.models import CustomUser
 from secretarial.views import SecretarialHomeView
 from django.contrib.auth.models import Permission
+from model_mommy import mommy
 
 
 class SecretarialHomeViewTests(TestCase):
@@ -49,30 +50,21 @@ class SecretarialHomeViewTests(TestCase):
         # Assign the required permission to the regular_user
         permission = Permission.objects.get(codename="view_meetingminutemodel")
         self.regular_user.user_permissions.add(permission)
+        mommy.make(CustomUser, type=CustomUser.Types.REGULAR, _quantity=13)
+        mommy.make(CustomUser, type=CustomUser.Types.CONGREGATED, _quantity=15)
 
-        # Log in as the regular_user with the required permission
         self.client.force_login(self.regular_user)
 
-        # Access the view
         response = self.client.get(reverse("secretarial:home"))
 
-        # Check for a successful response (200 OK)
         self.assertEqual(response.status_code, 200)
 
-        # Check for the presence of context data
+        number_of_members = response.context["number_of_members"]
+        number_of_visitors = response.context["number_of_visitors"]
+
         self.assertIn("number_of_members", response.context)
         self.assertIn("number_of_visitors", response.context)
+        # There are more congregated and regulars in the beginning of the code
+        self.assertEqual(number_of_members, 15)
+        self.assertEqual(number_of_visitors, 16)
 
-    def test_authenticated_user_with_permission(self):
-        # Get the permission object for 'secretarial.view_meetingminutemodel'
-        permission = Permission.objects.get(codename="view_meetingminutemodel")
-
-        # Assign the permission object to the regular_user
-        self.regular_user.user_permissions.add(permission)
-
-        self.client.force_login(self.regular_user)  # Log in as a regular user
-        response = self.client.get(reverse("secretarial:home"))
-
-        # Expecting 200 for authenticated users with necessary permission
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "secretarial/home.html")

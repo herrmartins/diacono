@@ -20,7 +20,7 @@ from decimal import Decimal
 
 
 class GenerateMonthlyReportView(PermissionRequiredMixin, TemplateView):
-    permission_required = "treasury.add_monthlyreportmodel"
+    permission_required = "treasury.view_monthlyreportmodel"
     template_name = "treasury/monthly_report_generator.html"
 
     def get(self, request, month, year, *args, **kwargs):
@@ -29,12 +29,14 @@ class GenerateMonthlyReportView(PermissionRequiredMixin, TemplateView):
         current_year = current_date.year
 
         if int(month) == current_month and int(year) == current_year:
+            print("Não se pode criar relatório analítico do mês em curso...")
             raise Http404("Não se pode criar relatório analítico do mês em curso...")
 
         try:
             month_year = datetime(int(year), int(month), 1)
             monthly_balance = MonthlyBalance.objects.get(month=month_year)
         except MonthlyBalance.DoesNotExist:
+            print("Não há registros para esta data...")
             raise Http404("Não há registros para esta data...")
 
         return super().get(request, *args, **kwargs)
@@ -51,8 +53,6 @@ class GenerateMonthlyReportView(PermissionRequiredMixin, TemplateView):
 
         context_data = context_user_data(self.request)
         church_info = context_data.get("church_info")
-
-        print("GENERATOR VIEW:", church_info, month_in_text)
 
         report_month = date(year, month, 1)
 
@@ -96,6 +96,8 @@ class GenerateMonthlyReportView(PermissionRequiredMixin, TemplateView):
         context["n_transactions"] = negative_transactions_dict
         context["total_ntransactions"] = negative_transactions_amount
         context["pm_balance"] = previous_month_balance
+        # Only for testing:
+        context["total_balance"] = balance_for_calc
 
         initial_data = {
             "month": report_month,

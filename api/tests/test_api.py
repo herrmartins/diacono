@@ -21,6 +21,8 @@ from datetime import datetime, date
 
 class TestViews(APITestCase):
     def setUp(self):
+        self.date = date(2023, 12, 1)
+        self.date_before = date(2023, 11, 1)
         self.user = CustomUser.objects.create_user(
             username="testuser", email="test@example.com", password="password123"
         )
@@ -38,7 +40,7 @@ class TestViews(APITestCase):
         )
         mommy.make(
             "treasury.MonthlyBalance",
-            month=datetime.strptime("2023-02-01", "%Y-%m-%d").date(),
+            month=self.date_before,
         )
         mommy.make("MinuteExcerptsModel")
         self.transaction = TransactionModel.objects.create(
@@ -46,7 +48,7 @@ class TestViews(APITestCase):
             description="Test Transaction1",
             amount=Decimal(str(300.00)),
             is_positive=True,
-            date=datetime.strptime("2023-12-22", "%Y-%m-%d").date()
+            date=self.date
         )
 
     def test_get_current_balance(self):
@@ -54,7 +56,7 @@ class TestViews(APITestCase):
             user=self.user,
             description="Test Transaction",
             amount=Decimal(str(500.00)),
-            date=timezone.now(),
+            date=self.date,
         )
 
         url = reverse("get-current-balance")
@@ -79,7 +81,7 @@ class TestViews(APITestCase):
             "description": "Test Transaction2",
             "amount": "200.00",
             "is_positive": True,
-            "date": "2023-12-25",
+            "date": self.date,
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

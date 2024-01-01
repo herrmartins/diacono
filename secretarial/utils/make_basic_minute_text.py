@@ -14,9 +14,9 @@ def make_minute(name_dict):
         ". Ele orou e declarou aberta a sessão. <p>O secretário ",
         "secretary",
         " leu a ata da reunião anterior. ",
-        " minute_reading_acceptance_proposal",
+        "minute_reading_acceptance_proposal",
         " propôs a aceitação da ata lida e ",
-        " minute_reading_acceptance_proposal_support",
+        "minute_reading_acceptance_proposal_support",
         " apoiou a proposta, havendo unanimidade por parte dos demais.</p> ",
         "<p>Houve leitura do relatório financeiro por ",
         "treasurer",
@@ -27,29 +27,34 @@ def make_minute(name_dict):
         ", saídas: R$",
         "expenses",
         ". ",
-        " finance_report_acceptance_proposal",
+        "finance_report_acceptance_proposal",
         " propôs a aceitação do relatório financeiro, recendo apoio de ",
-        " finance_report_acceptance_proposal_support",
+        "finance_report_acceptance_proposal_support",
         ". Houve unanimidade por parte dos demais.</p>",
         "<p>Não havendo assuntos em pauta, o pastor encerrou a sessão e eu ",
         "secretary",
         ", primeiro secretário,",
         " lavrei a presente ata que vai assinada por mim e pelo pastor.</p>",
         "meeting_date",
-        "<p>", " Primeiro secretário:", "</p>",
-        "<p>", "secretary", "</p>",
-        "<p>", " Pastor:", "</p>",
-        "<p>", "presidente", "</p>",
+        "<p>",
+        " Primeiro secretário:",
+        "</p><p>",
+        "secretary",
+        "</p>",
+        "<p>",
+        " Pastor:",
+        "</p>",
+        "<p>",
+        "presidente",
+        "</p>",
     ]
     result_text = []
     for word in text:
         if word in name_dict:
             if not word == "meeting_date":
-                print("Não é meeting_date")
-                result_text.append(str(name_dict[word]))
+                result_text.append(str(name_dict.get(word)))
             else:
-                result_text.append(date_to_words(name_dict[word]))
-                print("É meeting_date")
+                result_text.append(str(date_to_words(name_dict[word])))
         else:
             result_text.append(word)
     final_text = "".join(result_text)

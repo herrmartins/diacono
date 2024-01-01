@@ -1,6 +1,7 @@
 from django.test import TestCase
 from secretarial.utils.topdfutils import render_to_pdf
 from django.template.exceptions import TemplateDoesNotExist
+import unittest
 
 
 class RenderToPDFTestCase(TestCase):
@@ -31,3 +32,7 @@ class RenderToPDFTestCase(TestCase):
         pdf = render_to_pdf("secretarial/minute_pdf.html", empty_context)
         self.assertIsNotNone(pdf)
         self.assertIsInstance(pdf, bytes)
+
+
+if __name__ == "__main__":
+    unittest.main()

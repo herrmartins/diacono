@@ -3,32 +3,58 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from treasury.models import MonthlyBalance
+from users.models import CustomUser
+from django.utils import timezone
+from datetime import date
+from model_mommy import mommy
 
 
 class TreasuryHomeViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user = get_user_model().objects.create_user(
+        cls.date = date(2023, 11, 1)
+        cls.date_before = date(2023, 10, 1)
+        cls.user = CustomUser.objects.create_user(
             username="testuser", email="test@example.com", password="password123"
         )
         cls.treasury_group = Group.objects.create(name="treasury")
         cls.permission = Permission.objects.get(codename="view_transactionmodel")
         cls.treasury_group.permissions.add(cls.permission)
         cls.user.groups.add(cls.treasury_group)
+        cls.user.user_permissions.add(cls.permission)
 
-        # You may need to create MonthlyBalance instances as per your requirement
-""" 
-    def test_treasury_home_view(self):
-        url = reverse("treasury:home")
-        self.client.login(username="testuser", password="password123")
-        response = self.client.get(url)
+        cls.treasury_home_url = reverse("treasury:home")
 
+    def test_unauthorized_access(self):
+        response = self.client.get(self.treasury_home_url)
+        self.assertEqual(response.status_code, 302)
+
+    def test_insufficient_permission(self):
+        user_without_permission = CustomUser.objects.create_user(
+            username="testuser2", email="test2@example.com", password="password123"
+        )
+        self.client.force_login(user_without_permission)
+        response = self.client.get(self.treasury_home_url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_authorized_access(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.treasury_home_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "treasury/home.html")
 
-        # Add more specific assertions based on context data and expected behavior
-        # For example:
-        self.assertIn(
-            "form_transaction", response.context
-        )
- """
+    def test_context_data_no_balance(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.treasury_home_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("previous_month_account_balance", response.context)
+
+    def test_context_data_with_balance(self):
+        mommy.make(MonthlyBalance, month=self.date_before, balance=1000)
+
+        self.client.force_login(self.user)
+        response = self.client.get(self.treasury_home_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("previous_month_account_balance", response.context)
+        self.assertIn("form_transaction", response.context)

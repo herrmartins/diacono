@@ -42,7 +42,9 @@ def date_to_words(date_str):
         day_word = days[day_of_week]
 
         # Create the final formatted string
-        date_in_words = f"{day} de {month_word} de {year}, "
+        # Tirei a formatação do dia para que possa ser um só digito
+        # Se der pau, volte.
+        date_in_words = f"{day} de {month_word} de {year:04d}, "
 
         return date_in_words
     except ValueError:

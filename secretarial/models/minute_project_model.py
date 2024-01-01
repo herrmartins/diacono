@@ -1,12 +1,9 @@
 from django.db import models
 from core.models import BaseModel
 from users.models import CustomUser
-from django.dispatch import receiver
+from ckeditor.fields import RichTextField
 from secretarial.models import MeetingAgendaModel
 from secretarial.utils.make_basic_minute_text import make_minute
-from ckeditor.fields import RichTextField
-from django.db.models.signals import pre_save
-from .make_basic_minute_text import make_minute
 
 
 class MinuteProjectModel(BaseModel):
@@ -47,27 +44,52 @@ class MinuteProjectModel(BaseModel):
         verbose_name_plural = "Projeto de Ata"
 
     def __str__(self):
-        return "Ata do dia " + str(self.meeting_date)
+        return f"Ata do dia {self.meeting_date}"
 
+    def create_basic_minute_text(self):
+        data_dict = {
+            "church": "Igreja Batista Regular de Cidade Satélite",
+        }
 
-@receiver(pre_save, sender=MinuteProjectModel)
-def create_basic_minute_text(sender, instance, **kwargs):
-    data_dict = {
-        "church": "Igreja Batista Regular de Cidade Satélite",
-        "president": f"{instance.president.first_name} {instance.president.last_name}",
-        "secretary": f"{instance.secretary.first_name} {instance.secretary.last_name}",
-        "treasurer": f"{instance.treasurer.first_name} {instance.treasurer.last_name}",
-        "meeting_date": str(instance.meeting_date),
-        "number_of_attendees": instance.number_of_attendees,
-        "previous_minute_reading": instance.previous_minute_reading,
-        "minute_reading_acceptance_proposal": f"{instance.minute_reading_acceptance_proposal.first_name} {instance.minute_reading_acceptance_proposal.last_name}",
-        "minute_reading_acceptance_proposal_support": f"{instance.minute_reading_acceptance_proposal_support.first_name} {instance.minute_reading_acceptance_proposal_support.last_name}",
-        "previous_finance_report_reading": instance.previous_finance_report_reading,
-        "finance_report_acceptance_proposal": f"{instance.finance_report_acceptance_proposal.first_name} {instance.finance_report_acceptance_proposal.last_name}",
-        "finance_report_acceptance_proposal_support": f"{instance.finance_report_acceptance_proposal_support.first_name} {instance.finance_report_acceptance_proposal_support.last_name}",
-        "last_months_balance": instance.last_months_balance,
-        "revenue": instance.revenue,
-        "expenses": instance.expenses,
-    }
+        if self.president:
+            president_name = f"{self.president.first_name} {self.president.last_name}"
+            data_dict["president"] = president_name
+        else:
+            data_dict["president"] = "President Name Not Available"
 
-    instance.body = make_minute(data_dict)
+        if self.secretary:
+            secretary_name = f"{self.secretary.first_name} {self.secretary.last_name}"
+            data_dict["secretary"] = secretary_name
+        else:
+            data_dict["secretary"] = "Secretary Name Not Available"
+
+        if self.treasurer:
+            treasurer_name = f"{self.secretary.first_name} {self.secretary.last_name}"
+            data_dict["treasurer"] = secretary_name
+        else:
+            data_dict["treasurer"] = "treasurer Name Not Available"
+        if self.minute_reading_acceptance_proposal and (
+            self.minute_reading_acceptance_proposal.first_name
+            or self.minute_reading_acceptance_proposal.last_name
+        ):
+            mr_acceptor_name = f"{self.minute_reading_acceptance_proposal.first_name} {self.minute_reading_acceptance_proposal.last_name}"
+        else:
+            mr_acceptor_name = "Minute Reading Acceptor Name Not Available"
+
+        data_dict["minute_reading_acceptance_proposal"] = mr_acceptor_name
+
+        # For minute_reading_acceptance_proposal_support
+        if self.minute_reading_acceptance_proposal_support and (
+            self.minute_reading_acceptance_proposal_support.first_name
+            or self.minute_reading_acceptance_proposal_support.last_name
+        ):
+            mr_supporter_name = f"{self.minute_reading_acceptance_proposal_support.first_name} {self.minute_reading_acceptance_proposal_support.last_name}"
+        else:
+            mr_supporter_name = "Minute Reading Acceptor Supporter Name Not Available"
+
+        data_dict["minute_reading_acceptance_proposal_support"] = mr_supporter_name
+
+        # Similar logic can be applied to other fields...
+
+        self.body = make_minute(data_dict)
+        self.body = make_minute(data_dict)

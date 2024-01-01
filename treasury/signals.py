@@ -47,7 +47,6 @@ def create_missing_monthly_balances(sender, instance, created, **kwargs):
     if created:
         # Get the month the user saved
         instance_month = instance.month
-
         # Get the current date
         current_date = timezone.now().date()  # Extract date only
 
@@ -69,7 +68,7 @@ def create_missing_monthly_balances(sender, instance, created, **kwargs):
                 )
 
             # Move to the next month
-            next_month = instance_month.replace(day=1) + timedelta(days=32)
+            next_month = instance_month + relativedelta(months=1)
             instance_month = next_month.replace(day=1)
 
 

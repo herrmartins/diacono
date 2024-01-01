@@ -11,18 +11,21 @@ class MinuteCreateView(PermissionRequiredMixin, CreateView):
     template_name = "secretarial/minute_created.html"
     context_object_name = "minute"
 
-    def get_initial(self):
+    # Tirei, parece inútil, não tem url pattern para pegar PK... Vou ter um tempo..
+    """ def get_initial(self):
         initial = super().get_initial()
+
         if self.kwargs.get("pk"):
             minute_data = MinuteProjectModel.objects.get(
                 pk=self.kwargs.get("pk"))
+            print(minute_data)
             initial["president"] = minute_data.president
             initial["secretary"] = minute_data.secretary
             initial["meeting_date"] = minute_data.meeting_date.isoformat()
             initial["number_of_attendees"] = minute_data.number_of_atendees
             initial["body"] = minute_data.body
             initial["agenda"] = minute_data.meeting_agenda.all()
-        return initial
+        return initial """
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
