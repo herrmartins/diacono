@@ -314,8 +314,6 @@ class TransactionModelTests(TestCase):
 
         initial_monthly_balances = MonthlyBalance.objects.all()
 
-        print("BALANÇOS PÓS TRANSAÇÕES:", initial_monthly_balances)
-
         # Simulate deleting transactions
         transactions_to_delete = random.sample(list(TransactionModel.objects.all()), 3)
 
