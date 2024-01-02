@@ -67,4 +67,3 @@ class SecretarialHomeViewTests(TestCase):
         # There are more congregated and regulars in the beginning of the code
         self.assertEqual(number_of_members, 15)
         self.assertEqual(number_of_visitors, 16)
-
