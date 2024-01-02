@@ -7,9 +7,13 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import Group
 from django.db import transaction
+from users.utils.user_profile_path import user_profile_image_path
 
 
 class CustomUser(AbstractUser):
+    profile_image = models.ImageField(
+        upload_to=user_profile_image_path, blank=True, null=True
+    )
     date_of_birth = models.DateField(
         blank=True, null=True, auto_now=False, auto_now_add=False
     )

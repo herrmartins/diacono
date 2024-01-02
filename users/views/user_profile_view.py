@@ -10,7 +10,6 @@ class UserProfileView(PermissionRequiredMixin, DetailView):
     permission_required = 'users.view_customuser'
 
     def get_object(self, queryset=None):
-        print("USER:", CustomUser.objects.get(pk=self.kwargs['pk']))
         return CustomUser.objects.get(pk=self.kwargs['pk'])
 
     def has_permission(self):

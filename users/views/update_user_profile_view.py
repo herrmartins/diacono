@@ -19,6 +19,6 @@ class UserProfileUpdateView(PermissionRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = get_object_or_404(CustomUser, pk=self.kwargs['pk'])
-        context['user_id'] = user.id
+        user = get_object_or_404(CustomUser, pk=self.kwargs["pk"])
+        context["user_id"] = user.id
         return context

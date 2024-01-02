@@ -1,0 +1,1 @@
+from .user_profile_path import user_profile_image_path

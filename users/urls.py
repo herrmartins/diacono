@@ -9,6 +9,7 @@ from users.views import (
     UpdateUserFunctionView,
 )
 
+
 app_name = "users"
 
 urlpatterns = [
@@ -32,3 +33,4 @@ urlpatterns = [
         name="update-user-functions",
     ),
 ]
+

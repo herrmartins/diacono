@@ -2,6 +2,7 @@ from django import forms
 from django.forms import ModelForm
 from users.models import CustomUser
 from django.forms.widgets import DateInput
+from django.forms.widgets import ClearableFileInput
 
 
 class UpdateUserProfileModelForm(ModelForm):
@@ -23,6 +24,7 @@ class UpdateUserProfileModelForm(ModelForm):
             "is_whatsapp",
             "date_of_birth",
             "about",
+            "profile_image",
         )
 
         labels = {
@@ -34,6 +36,7 @@ class UpdateUserProfileModelForm(ModelForm):
             "is_whatsapp": "Whatsapp?",
             "date_of_birth": "",
             "about": "",
+            "Imagem": "Foto do Perfil",
         }
 
         widgets = {
@@ -78,5 +81,11 @@ class UpdateUserProfileModelForm(ModelForm):
                     "class": "form-control my-2",
                     "placeholder": "Sobre você...",
                 },
+            ),
+            "profile_image": ClearableFileInput(
+                attrs={
+                    "class": "form-control mt-2",
+                    "accept": "image/*",
+                }
             ),
         }
