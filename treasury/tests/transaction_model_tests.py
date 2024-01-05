@@ -71,6 +71,36 @@ class TransactionModelTests(TestCase):
         expected_balance_c_month = Decimal(100) + Decimal(transaction.amount)
         self.assertEqual(expected_balance_c_month, queried_monthly_balance.balance)
 
+    def test_create_transactions_no_two_monthly_balance(self):
+        five_months_ago = self.current_month - relativedelta(months=5)
+
+        mommy.make(MonthlyBalance, month=self.a_year_ago, balance=100)
+
+        print(
+        )
+        
+        MonthlyBalance.objects.get(month=self.current_month).delete()
+        MonthlyBalance.objects.get(month=five_months_ago).delete()
+
+        # Testing if create
+        transaction = mommy.make(TransactionModel, date=five_months_ago)
+
+        queried_monthly_balance = None
+
+        try:
+            queried_monthly_balance = MonthlyBalance.objects.get(
+                month=self.current_month
+            )
+        except MonthlyBalance.DoesNotExist:
+            pass
+
+        self.assertIsNotNone(
+            queried_monthly_balance, "MonthlyBalance for this month ago should exist"
+        )
+
+        expected_balance_c_month = Decimal(100) + Decimal(transaction.amount)
+        self.assertEqual(expected_balance_c_month, queried_monthly_balance.balance)
+
     def test_edit_transaction(self):
         # Create an initial transaction with an amount of 100
         transaction = TransactionModel.objects.create(
