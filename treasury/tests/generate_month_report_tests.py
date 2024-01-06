@@ -31,7 +31,7 @@ class GenerateMonthlyReportViewTests(TestCase):
         cls.user.groups.add(cls.treasury_group)
         cls.user.user_permissions.add(cls.permission)
 
-        mommy.make(MonthlyBalance, month=cls.date_before, balance=100)
+        mommy.make(MonthlyBalance, month=cls.date_before, balance=100, is_first_month=True)
         mommy.make(TransactionModel, date=cls.date, amount=10)
         mommy.make(TransactionModel, date=cls.date, amount=15)
         mommy.make(TransactionModel, date=cls.date, amount=70)
@@ -110,7 +110,7 @@ class GenerateMonthlyReportViewTests(TestCase):
 
         next_month = main_date + relativedelta(months=1)
 
-        mommy.make(MonthlyBalance, month=previous_month, balance=100)
+        mommy.make(MonthlyBalance, month=previous_month, balance=100, is_first_month=True)
 
         mommy.make(TransactionModel, date=main_date, amount=50)
         mommy.make(TransactionModel, date=main_date, amount=30)

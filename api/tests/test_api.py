@@ -40,7 +40,7 @@ class TestViews(APITestCase):
         )
         mommy.make(
             "treasury.MonthlyBalance",
-            month=self.date_before,
+            month=self.date_before, is_first_month=True
         )
         mommy.make("MinuteExcerptsModel")
         self.transaction = TransactionModel.objects.create(

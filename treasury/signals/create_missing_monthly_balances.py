@@ -1,30 +1,40 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from treasury.models import MonthlyBalance
-from dateutil.relativedelta import relativedelta
-from django.utils import timezone
-
+from treasury.utils import check_and_create_missing_balances, all_balances_present
+from datetime import datetime
 
 
 @receiver(post_save, sender=MonthlyBalance)
 def create_missing_monthly_balances(sender, instance, created, **kwargs):
-    if created:
-        previous_month = instance.month - relativedelta(months=1)
-        # Get the month the user saved
-        instance_month = instance.month
-        # Get the current date
-        current_date = timezone.now().date()  # Extract date only
-        n_while = 0
-        while instance_month.year < current_date.year or (
-            instance_month.year == current_date.year
-            and instance_month.month <= current_date.month
-        ):
-            if not MonthlyBalance.objects.filter(month=instance_month).exists():
-                is_first = instance_month == instance.month
-                MonthlyBalance.objects.create(
-                    month=instance_month,
-                    is_first_month=is_first,
-                    balance=instance.balance,
-                )
-            next_month = instance_month + relativedelta(months=1)
-            instance_month = next_month.replace(day=1)
+    current_month = datetime.now().date().replace(day=1)
+
+    if created and instance.is_first_month:
+        print("É o primeiro de todos...")
+        if instance.month < current_month:
+            post_save.disconnect(
+                receiver=create_missing_monthly_balances,
+                sender=MonthlyBalance,
+            )
+            check_and_create_missing_balances(
+                instance.month)
+            post_save.connect(
+                receiver=create_missing_monthly_balances,
+                sender=MonthlyBalance,
+            )
+        elif instance.month == current_month:
+            pass
+    else:
+        if all_balances_present():
+            pass
+        else:
+            post_save.disconnect(
+                receiver=create_missing_monthly_balances,
+                sender=MonthlyBalance,
+            )
+            check_and_create_missing_balances(
+                instance.month)
+            post_save.connect(
+                receiver=create_missing_monthly_balances,
+                sender=MonthlyBalance,
+            )

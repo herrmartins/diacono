@@ -51,7 +51,7 @@ class TreasuryHomeViewTest(TestCase):
         self.assertNotIn("previous_month_account_balance", response.context)
 
     def test_context_data_with_balance(self):
-        mommy.make(MonthlyBalance, month=self.date_before, balance=1000)
+        mommy.make(MonthlyBalance, month=self.date_before, is_first_month=True ,balance=1000)
 
         self.client.force_login(self.user)
         response = self.client.get(self.treasury_home_url)

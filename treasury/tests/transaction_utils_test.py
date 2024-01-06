@@ -1,10 +1,9 @@
 import unittest
 from decimal import Decimal
 from datetime import datetime
-from collections import defaultdict
-import calendar
+from dateutil.relativedelta import relativedelta
 from django.utils import timezone
-from treasury.models import TransactionModel, CategoryModel
+from treasury.models import TransactionModel, CategoryModel, MonthlyBalance
 from treasury.utils import (
     get_aggregate_transactions_by_category,
     get_total_transactions_amount,
@@ -13,56 +12,56 @@ from treasury.utils import (
 from users.models import CustomUser
 from model_mommy import mommy
 from decimal import Decimal
-from django.core.exceptions import ObjectDoesNotExist
+from django.test import TestCase
 
 
-class TestTransactionFunctions(unittest.TestCase):
+class TestTransactionUtils(TestCase):
     def setUp(self):
-        user = mommy.make("users.CustomUser")
-        now = timezone.now().date()
-        category1 = CategoryModel.objects.create(name="Category 1")
-        category2 = CategoryModel.objects.create(name="Category 2")
-        category3 = CategoryModel.objects.create(name="Category 3")
+        self.user = mommy.make(CustomUser)
+        self.now = timezone.now().date().replace(day=1)
+        self.one_month_ago = timezone.now().date().replace(day=1) - relativedelta(months=1)
+        mommy.make(MonthlyBalance, month=self.one_month_ago, is_first_month=True)
+        print("MONTHS", MonthlyBalance.objects.all())
 
-        self.transaction1 = TransactionModel.objects.create(
-            user=user,
-            category=category1,
+        self.category1 = mommy.make(CategoryModel, name="Category 1")
+        self.category2 = mommy.make(CategoryModel, name="Category 2")
+        self.category3 = mommy.make(CategoryModel, name="Category 3")
+
+        # Create transactions using mommy.prepare
+        self.transaction1 = mommy.make(
+            TransactionModel,
+            category=self.category1,
             amount=Decimal("50.00"),
-            is_positive=True,
-            date=now,
+            date=self.now,
             description="Test Transaction 1",
         )
-        self.transaction2 = TransactionModel.objects.create(
-            user=user,
-            category=category2,
+        self.transaction2 = mommy.make(
+            TransactionModel,
+            category=self.category2,
             amount=Decimal("100.00"),
-            is_positive=True,
-            date=now,
+            date=self.now,
             description="Test Transaction 2",
         )
-        self.transaction3 = TransactionModel.objects.create(
-            user=user,
-            category=category3,
+        self.transaction3 = mommy.make(
+            TransactionModel,
+            category=self.category3,
             amount=Decimal("75.00"),
-            is_positive=True,
-            date=now,
+            date=self.now,
             description="Test Transaction 3",
         )
 
-        TransactionModel.objects.create(
-            user=user,
-            category=category1,
+        self.transaction4 = mommy.make(
+            TransactionModel,
+            category=self.category1,
             amount=Decimal("-50.00"),
-            is_positive=False,
-            date=now,
+            date=self.now,
             description="Test Transaction - Category 1",
         )
-        TransactionModel.objects.create(
-            user=user,
-            category=category3,
+        self.transaction5 = mommy.make(
+            TransactionModel,
+            category=self.category3,
             amount=Decimal("-25.00"),
-            is_positive=False,
-            date=now,
+            date=self.now,
             description="Test Transaction - Category 3",
         )
 
@@ -70,7 +69,8 @@ class TestTransactionFunctions(unittest.TestCase):
         now = timezone.now().date()
         then = datetime(2022, 1, 1).date()
 
-        aggregated_dict = get_aggregate_transactions_by_category(now.year, now.month)
+        aggregated_dict = get_aggregate_transactions_by_category(
+            now.year, now.month)
         expected_keys = ["Category 1", "Category 2", "Category 3"]
         expected_result = {
             "Category 1": "50.00",
@@ -102,9 +102,6 @@ class TestTransactionFunctions(unittest.TestCase):
             now.year, now.month, is_positive=False
         )
         self.assertEqual(aggregated_dict_edge_case, expected_result_negative)
-
-        # Test 7: Performance Test - For a large dataset
-        # Add test logic for performance
 
     def test_total_transactions_amount(self):
         # Test cases for get_total_transactions_amount function
@@ -155,9 +152,6 @@ class TestTransactionFunctions(unittest.TestCase):
             get_last_day_of_month(2023, 13)
         with self.assertRaises(ValueError):
             get_last_day_of_month(2023, 0)
-
-        # Test 4: Performance Test - For a range of month and year inputs
-        # Add test logic for performance
 
 
 if __name__ == "__main__":
