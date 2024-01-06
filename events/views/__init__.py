@@ -1,0 +1,1 @@
+from .events_home_view import EventsHomeView

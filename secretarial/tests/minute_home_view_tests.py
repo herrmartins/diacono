@@ -34,14 +34,28 @@ class MinuteHomeViewTest(TestCase):
         response = self.client.get(reverse("secretarial:minute-home"))
         self.assertEqual(response.status_code, 200)  # Should be accessible now
 
+        # self.assertContains(response, "Some content in the response")
+
     def test_view_context_data(self):
         # Test if the context data is being set correctly in the view
         self.client.login(username="testuser", password="password123")
         response = self.client.get(reverse("secretarial:minute-home"))
 
+        mommy.make(MeetingMinuteModel, _quantity=5)
+        mommy.make(MinuteProjectModel, _quantity=5)
+        mommy.make(MinuteTemplateModel, _quantity=5)
+        mommy.make(MinuteExcerptsModel, _quantity=5)
+
         self.assertTrue("form" in response.context)
+        self.assertIsInstance(response.context["form"], MinuteProjectModelForm)
         self.assertTrue("meeting_minutes" in response.context)
         self.assertTrue("number_of_projects" in response.context)
+
+        self.assertEqual(len(response.context["meeting_minutes"]), 5)
+        #self.assertEqual(response.context["number_of_projects"], 5)
+        self.assertEqual(response.context["number_of_templates"], 5)
+        self.assertEqual(response.context["number_of_excerpts"], 5)
+        self.assertEqual(len(response.context["minutes"]), 5)
 
     def test_get_context_data(self):
         # Creating test instances using Model Mommy

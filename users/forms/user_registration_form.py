@@ -9,12 +9,20 @@ class RegisterUserForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = ("username", "first_name", "last_name", "password1", "password2")
+        fields = (
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "password1",
+            "password2",
+        )
 
         labels = {
             "username": "Nome do usuário:",
             "first_name": "Nome:",
             "last_name": "Sobrenome:",
+            "email": "E-mail",
         }
 
     def __init__(self, *args, **kwargs):
@@ -29,10 +37,12 @@ class RegisterUserForm(UserCreationForm):
             "placeholder"
         ] = "Digite seu primeiro nome..."
 
+        self.fields["email"].widget.attrs["class"] = "form-control"
+        self.fields["email"].widget.attrs["placeholder"] = "Digite seu e-mail..."
+        self.fields["email"].widget.attrs["type"] = "email"
+
         self.fields["last_name"].widget.attrs["class"] = "form-control"
-        self.fields["last_name"].widget.attrs[
-            "placeholder"
-        ] = "Digite seu sobrenome..."
+        self.fields["last_name"].widget.attrs["placeholder"] = "Digite seu sobrenome..."
 
         self.fields["password1"].widget.attrs["class"] = "form-control"
         self.fields["password1"].widget.attrs["type"] = "password"

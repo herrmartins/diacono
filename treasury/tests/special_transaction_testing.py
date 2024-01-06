@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.utils import timezone
 from treasury.utils import check_and_create_missing_balances
-from treasury.models import TransactionModel, MonthlyBalance
+from treasury.models import TransactionModel, MonthlyBalance, CategoryModel
 from users.models import CustomUser
 from model_mommy import mommy
 from dateutil.relativedelta import relativedelta
@@ -18,18 +18,23 @@ class SpecialTransactionModelTests(TestCase):
         self.one_month_ago = self.current_month - relativedelta(months=1)
         self.a_year_ago = self.current_month - relativedelta(months=12)
         self.eleven_months_ago = self.current_month - relativedelta(months=11)
-
+        self.cat_1 = mommy.make(CategoryModel, name="Sample Category 1")
+        self.cat_2 = mommy.make(CategoryModel, name="Sample Category 2")
         self.user = CustomUser.objects.create_user(
             username="test_user", password="password"
         )
 
     def test_create_transactions_no_monthly_balance(self):
-        mommy.make(MonthlyBalance, month=self.a_year_ago, balance=100, is_first_month=True)
+        mommy.make(
+            MonthlyBalance, month=self.a_year_ago, balance=100, is_first_month=True
+        )
 
         MonthlyBalance.objects.get(month=self.five_months_ago).delete(is_testing=True)
 
-        transaction = mommy.make(TransactionModel, date=self.five_months_ago)
-        #print("TRANSACTIONS:", transaction)
+        transaction = mommy.make(
+            TransactionModel, date=self.five_months_ago, category=self.cat_1
+        )
+
         queried_monthly_balance = None
 
         try:
@@ -46,20 +51,22 @@ class SpecialTransactionModelTests(TestCase):
 
         expected_balance_c_month = Decimal(100) + Decimal(transaction.amount)
         self.assertEqual(expected_balance_c_month, queried_monthly_balance.balance)
-        #print("ALL MONTHS AFTER ALL", MonthlyBalance.objects.all().order_by("month"))
+        # print("ALL MONTHS AFTER ALL", MonthlyBalance.objects.all().order_by("month"))
         self.assertEqual(number_of_balances, 13)
 
     def test_create_transactions_no_monthly_balances(self):
-        mommy.make(MonthlyBalance, month=self.a_year_ago, balance=100, is_first_month=True)
+        mommy.make(
+            MonthlyBalance, month=self.a_year_ago, balance=100, is_first_month=True
+        )
 
         MonthlyBalance.objects.get(month=self.five_months_ago).delete(is_testing=True)
         MonthlyBalance.objects.get(month=self.four_months_ago).delete(is_testing=True)
         MonthlyBalance.objects.get(month=self.one_month_ago).delete(is_testing=True)
-        #print("MESES APÓS DELETE", MonthlyBalance.objects.all().order_by('month'))
 
         with transaction.atomic():
-            my_transaction = mommy.make(TransactionModel, date=self.five_months_ago)
-        print("TRANSAÇÃO PARA CONFERÊCIA:", my_transaction)
+            my_transaction = mommy.make(
+                TransactionModel, date=self.five_months_ago, category=self.cat_1
+            )
 
         queried_monthly_balance = None
 

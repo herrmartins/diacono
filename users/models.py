@@ -19,6 +19,7 @@ class CustomUser(AbstractUser):
         blank=True, null=True, auto_now=False, auto_now_add=False
     )
     address = models.CharField(blank=True, max_length=255)
+    email = models.EmailField(blank=False, null=False)
     # Não há validação, a não ser do próprio phonefield
     # Se colocar uma validação de telefone brasileiro,
     # se for estrangeiro, não vai dar.
