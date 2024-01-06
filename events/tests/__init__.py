@@ -1,0 +1,1 @@
+from .events_form_tests import EventFormTestCase

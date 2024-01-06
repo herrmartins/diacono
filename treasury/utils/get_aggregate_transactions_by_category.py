@@ -19,7 +19,7 @@ def get_aggregate_transactions_by_category(year, month, is_positive=True):
         category_name = (
             transaction.category.name if transaction.category else "outros"
         )
-        # Ensure the amount is converted to Decimal or float
+
         transactions_by_category[category_name] += Decimal(transaction.amount)
 
     aggregated_transactions_dict = {

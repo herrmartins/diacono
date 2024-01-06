@@ -21,6 +21,7 @@ class MinuteHomeView(PermissionRequiredMixin, TemplateView):
         context["form"] = MinuteProjectModelForm()
         context["meeting_minutes"] = MeetingMinuteModel.objects.all().reverse()[:10]
         context["number_of_projects"] = MinuteProjectModel.objects.count()
+        print("CONTAGEM:",MinuteProjectModel.objects.count())
         context["number_of_excerpts"] = MinuteExcerptsModel.objects.count()
         context["number_of_minutes"] = minutes.count()
         context["minutes"] = minutes

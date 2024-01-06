@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'xhtml2pdf',
     "weasyprint",
-
+    "events.apps.EventsConfig",
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
     'secretarial.apps.SecretarialConfig',

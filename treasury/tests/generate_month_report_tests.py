@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from users.models import CustomUser
 from django.contrib.auth.models import Group, Permission
-from treasury.models import MonthlyBalance, TransactionModel
+from treasury.models import MonthlyBalance, TransactionModel, CategoryModel
 from model_mommy import mommy
 from datetime import date, datetime
 import unittest
@@ -30,14 +30,15 @@ class GenerateMonthlyReportViewTests(TestCase):
         cls.treasury_group.permissions.add(cls.permission)
         cls.user.groups.add(cls.treasury_group)
         cls.user.user_permissions.add(cls.permission)
-
+        cls.cat_1 = mommy.make(CategoryModel, name="Sample Cat. 1")
+        cls.cat_2 = mommy.make(CategoryModel, name="Sample Cat. 2")
         mommy.make(MonthlyBalance, month=cls.date_before, balance=100, is_first_month=True)
-        mommy.make(TransactionModel, date=cls.date, amount=10)
-        mommy.make(TransactionModel, date=cls.date, amount=15)
-        mommy.make(TransactionModel, date=cls.date, amount=70)
-        mommy.make(TransactionModel, date=cls.date, amount=100)
-        mommy.make(TransactionModel, date=cls.date, amount=-50)
-        mommy.make(TransactionModel, date=cls.date, amount=-25)
+        mommy.make(TransactionModel, date=cls.date, amount=10, category=cls.cat_1)
+        mommy.make(TransactionModel, date=cls.date, amount=15, category=cls.cat_1)
+        mommy.make(TransactionModel, date=cls.date, amount=70, category=cls.cat_2)
+        mommy.make(TransactionModel, date=cls.date, amount=100, category=cls.cat_1)
+        mommy.make(TransactionModel, date=cls.date, amount=-50, category=cls.cat_2)
+        mommy.make(TransactionModel, date=cls.date, amount=-25, category=cls.cat_1)
 
     def setUp(self):
         self.client = Client()
