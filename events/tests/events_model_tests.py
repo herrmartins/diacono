@@ -2,9 +2,8 @@ from django.test import TestCase
 from datetime import datetime, timedelta
 
 from model_mommy import mommy
-from core.models import BaseModel
 from users.models import CustomUser
-from events.models import Event, Venue
+from events.models import Event, Venue,EventCategory
 
 
 class EventModelTestCase(TestCase):
@@ -17,12 +16,14 @@ class EventModelTestCase(TestCase):
             name='Test Venue', address='123 Test St', capacity=200)
         self.venue1 = Venue.objects.create(
             name='Test Venue 1', address='345 Test St', capacity=100)
-        self.event = Event.objects.create(
-            title='Test Event',
-            start_date=datetime.now(),
-            user=self.user1,
-            location=self.venue1
-        )
+        self.category = mommy.make(EventCategory)
+        self.event = mommy.make(Event,
+                                title='Test Event',
+                                start_date=datetime.now(),
+                                user=self.user1,
+                                location=self.venue1,
+                                category=self.category
+                                )
 
     def test_field_constraints(self):
         event = Event.objects.get(title='Test Event')
@@ -60,25 +61,25 @@ class EventModelTestCase(TestCase):
 
     def test_event_creation(self):
         # Test creating an event with mandatory fields
-        new_event = Event.objects.create(
-            title='New Event',
-            start_date=datetime.now(),
-            user=self.user,
-            location=self.venue
-        )
+        new_event = mommy.make(Event,
+                               title='New Event',
+                               start_date=datetime.now(),
+                               user=self.user,
+                               location=self.venue
+                               )
         self.assertEqual(new_event.title, 'New Event')
 
         # Test creating an event with optional fields
-        optional_event = Event.objects.create(
-            title='Optional Event',
-            start_date=datetime.now(),
-            user=self.user,
-            location=self.venue,
-            end_date=datetime.now() + timedelta(days=2),
-            price=30.00,
-            contact_user=self.user,
-            contact_name='Optional Contact'
-        )
+        optional_event = mommy.make(Event,
+                                    title='Optional Event',
+                                    start_date=datetime.now(),
+                                    user=self.user,
+                                    location=self.venue,
+                                    end_date=datetime.now() + timedelta(days=2),
+                                    price=30.00,
+                                    contact_user=self.user,
+                                    contact_name='Optional Contact'
+                                    )
         self.assertEqual(optional_event.price, 30.00)
         self.assertEqual(optional_event.contact_name, 'Optional Contact')
 
@@ -96,4 +97,5 @@ class EventModelTestCase(TestCase):
 
         event.start_date = datetime.now() + timedelta(days=1)
         event.save()
-        self.assertEqual(event.start_date.date(), (datetime.now() + timedelta(days=1)).date())
+        self.assertEqual(event.start_date.date(),
+                         (datetime.now() + timedelta(days=1)).date())

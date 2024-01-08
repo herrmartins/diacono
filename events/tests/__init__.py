@@ -1,3 +1,4 @@
 from .events_form_tests import EventFormTestCase
 from .events_model_tests import EventModelTestCase
 from .events_manager_tests import EventManagerTests
+from .event_category_model_tests import EventCategoryModelTest

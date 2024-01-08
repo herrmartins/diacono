@@ -1,6 +1,6 @@
 from django.test import TestCase
 from users.models import CustomUser
-from events.models import Event, Venue
+from events.models import Event, Venue, EventCategory
 from events.forms import EventForm
 from model_mommy import mommy
 
@@ -11,6 +11,7 @@ class EventFormTestCase(TestCase):
             username="testuser", email="test@example.com"
         )
         self.location = mommy.make(Venue)
+        mommy.make(EventCategory, _quantity=5)
 
         self.valid_data = {
             "user": self.user.id,
@@ -22,6 +23,7 @@ class EventFormTestCase(TestCase):
             "location": self.location.id,
             "contact_user": "",
             "contact_name": "John Doe",
+            "category": 2,
         }
 
     def test_event_form_valid(self):

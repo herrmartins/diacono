@@ -15,17 +15,22 @@ class EventForm(forms.ModelForm):
             "location",
             "contact_user",
             "contact_name",
+            "category",
         ]
         widgets = {
             "user": forms.HiddenInput(),
-            "start_date": forms.DateTimeInput(attrs={"class": "form-control", 'type': 'datetime-local'}),
-            "end_date": forms.DateTimeInput(attrs={"class": "form-control", 'type': 'datetime-local'}),
+            "start_date": forms.DateTimeInput(
+                attrs={"class": "form-control", 'type': 'datetime-local'}),
+            "end_date": forms.DateTimeInput(
+                attrs={"class": "form-control", 'type': 'datetime-local'}),
             "price": forms.NumberInput(attrs={"class": "form-control"}),
             "contact_name": forms.TextInput(attrs={"class": "form-control"}),
             "contact_user": forms.Select(attrs={"class": "form-select"}),
             "title": forms.TextInput(attrs={"class": "form-control"}),
-            "description": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "description": forms.Textarea(
+                attrs={"class": "form-control", "rows": 3}),
             "location": forms.Select(attrs={"class": "form-select"}),
+            "category": forms.Select(attrs={"class": "form-select"}),
         }
 
     def __init__(self, *args, **kwargs):

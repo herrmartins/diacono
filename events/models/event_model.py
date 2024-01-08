@@ -29,7 +29,8 @@ class Event(BaseModel):
     price = models.DecimalField(
         max_digits=5, decimal_places=2, null=True, blank=True)
     location = models.ForeignKey(
-        "events.Venue", on_delete=models.SET_DEFAULT, null=False, blank=False, default=1)
+        "events.Venue", on_delete=models.SET_DEFAULT, null=False,
+        blank=False, default=1)
     contact_user = models.ForeignKey(
         "users.CustomUser",
         on_delete=models.SET_NULL,
@@ -38,6 +39,8 @@ class Event(BaseModel):
         related_name="event_custom_user",
     )
     contact_name = models.CharField(max_length=100, null=True, blank=True)
+    category = models.ForeignKey(
+        "events.EventCategory", on_delete=models.PROTECT, null=True, blank=True)
 
     objects = EventManager()
 

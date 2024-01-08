@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.utils import timezone
 from datetime import timedelta
-from events.models import Event, EventManager, Venue
+from events.models import Event, Venue, EventCategory
 from users.models import CustomUser
 from model_mommy import mommy
 
@@ -12,22 +12,23 @@ class EventManagerTests(TestCase):
         self.event_manager = Event.objects
         self.current_date = timezone.now()
         self.venue = mommy.make(Venue)
+        mommy.make(EventCategory, _quantity=3)
 
         # Create events for testing
         for month in range(1, 13):
             # Create events in future months
             start_date = self.current_date + timedelta(days=30 * month)
             end_date = start_date + timedelta(days=3)
-            Event.objects.create(
-                user=self.user,
-                title=f"Event {month}",
-                start_date=start_date,
-                end_date=end_date,
-                price=50.00,
-                location_id=1,
-                contact_user_id=1,
-                contact_name="Test Contact"
-            )
+            mommy.make(Event,
+                       user=self.user,
+                       title=f"Event {month}",
+                       start_date=start_date,
+                       end_date=end_date,
+                       price=50.00,
+                       location_id=1,
+                       contact_user_id=1,
+                       contact_name="Test Contact",
+                       )
 
         self.yesterday_event = mommy.make(Event,
                                           title="Yesterday's Event",
@@ -38,7 +39,7 @@ class EventManagerTests(TestCase):
                                           price=50.00,
                                           location_id=1,
                                           contact_user_id=1,
-                                          contact_name="Test Contact"
+                                          contact_name="Test Contact",
                                           )
 
     def test_events_by_month_current_year(self):
