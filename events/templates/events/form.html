@@ -1,0 +1,65 @@
+{% extends 'core/base.html' %} {% block content %}
+
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+<p class="fs-3">Bem vindo, {{user}}!</p>
+<p class="fw-light">Cadastre um evento..</p>
+<div class="container my-2">
+  <div class="row justify-content-center">
+    <div class="col-sm-auto">
+        <form method="POST", action="{% url 'events:create-event' %}">
+          {% csrf_token %}
+          {{form.as_p}}
+          <input type="submit" value="Cadastrar" class="btn btn-primary">
+        </form>
+    </div>
+<div class="col-sm">
+    <p class="fw-light">Eventos cadastrados...</p>
+
+    {% for month, events_in_month in events.items %}
+        <div class="mb-4">
+            <h3>{{ month|title }}</h3>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for event in events_in_month %}
+                <div class="col mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ event.title }}</h5>
+                            <p class="card-text">{{ event.description }}</p>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Start Date: {{ event.start_date }}</li>
+                                <li class="list-group-item">End Date: {{ event.end_date }}</li>
+                                <li class="list-group-item">Price: {{ event.price }}</li>
+                                <!-- Add more details as needed -->
+                            </ul>
+                            <div class="card-footer">
+                                <small class="text-muted">Location: {{ event.location.name }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+
+
+</div>
+{{events}}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

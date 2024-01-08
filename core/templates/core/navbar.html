@@ -20,6 +20,7 @@
         <li class="nav-item">
           <a class="nav-link mx-2" href="{% url 'events:home' %}">Eventos</a>
         </li>
+
         <li class="nav-item">
           <a class="nav-link mx-2" href="{% url 'logout' %}">Logout</a>
         </li>
@@ -43,6 +44,7 @@
 
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <li><a class="dropdown-item" href="{% url 'secretarial:home' %}">Secretaria</a></li>
+            <li><a class="dropdown-item" href="{% url 'events:register' %}">Cadastrar Eventos</a></li>
             <li><a class="dropdown-item" href="{% url 'treasury:home' %}">Tesouraria</a>
               <ul class="dropdown-submenu">
                 <li><a class="dropdown-item" href="{% url 'treasury:list-financial-reports' %}">Relatórios</a></li>

@@ -3,6 +3,8 @@ from django.forms import ModelForm
 from users.models import CustomUser
 from django.forms.widgets import DateInput
 from django.forms.widgets import ClearableFileInput
+from django.core.exceptions import ValidationError
+from datetime import datetime, date
 
 
 class UpdateUserProfileModelForm(ModelForm):
@@ -12,6 +14,18 @@ class UpdateUserProfileModelForm(ModelForm):
         initial_date = self.initial.get("date_of_birth")
         if initial_date:
             self.initial["date_of_birth"] = initial_date.strftime("%Y-%m-%d")
+
+    def clean_date_of_birth(self):
+        date_of_birth = self.cleaned_data.get("date_of_birth")
+        if date_of_birth:
+            if isinstance(date_of_birth, date):  # Using the imported 'date' from datetime module
+                date_of_birth = date_of_birth.strftime("%Y-%m-%d")
+
+            try:
+                datetime.strptime(date_of_birth, "%Y-%m-%d")
+            except ValueError:
+                raise ValidationError("Invalid date format. Please use YYYY-MM-DD.")
+        return date_of_birth
 
     class Meta:
         model = CustomUser

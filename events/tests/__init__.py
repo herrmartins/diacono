@@ -1,1 +1,3 @@
 from .events_form_tests import EventFormTestCase
+from .events_model_tests import EventModelTestCase
+from .events_manager_tests import EventManagerTests

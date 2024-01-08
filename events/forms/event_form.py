@@ -18,6 +18,14 @@ class EventForm(forms.ModelForm):
         ]
         widgets = {
             "user": forms.HiddenInput(),
+            "start_date": forms.DateTimeInput(attrs={"class": "form-control", 'type': 'datetime-local'}),
+            "end_date": forms.DateTimeInput(attrs={"class": "form-control", 'type': 'datetime-local'}),
+            "price": forms.NumberInput(attrs={"class": "form-control"}),
+            "contact_name": forms.TextInput(attrs={"class": "form-control"}),
+            "contact_user": forms.Select(attrs={"class": "form-select"}),
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "location": forms.Select(attrs={"class": "form-select"}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -34,14 +42,16 @@ class EventForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         contact_name = cleaned_data.get("contact_name")
-        custom_user = cleaned_data.get("custom_user")
+        custom_user = cleaned_data.get("contact_user")
 
         if not contact_name and not custom_user:
-            self.add_error("contact_name", "Please provide contact information.")
+            self.add_error(
+                "contact_name", "Please provide contact information.")
             raise forms.ValidationError("Please provide contact information.")
 
         if contact_name and custom_user:
             # Instead of raising an error, prioritize custom_user as contact
-            cleaned_data["contact_info"] = custom_user
+            cleaned_data["contact_user"] = custom_user
+            cleaned_data["contact_name"] = ""
 
         return cleaned_data
