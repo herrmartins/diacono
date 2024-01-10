@@ -8,18 +8,23 @@ from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 from datetime import date, timedelta
 from random import randint
-from django.db import models
+from django.db import models, transaction
 import random
 from treasury.exceptions import NoInitialMonthlyBalance
+from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class TransactionModelTests(TestCase):
     def setUp(self):
         self.current_month = timezone.now().date().replace(day=1)
         self.two_months_ago = self.current_month - relativedelta(months=2)
+        self.two_years_ago = self.current_month - relativedelta(years=2)
         self.a_year_ago = self.current_month - relativedelta(months=12)
         self.five_months_ago = self.current_month - relativedelta(months=5)
         self.four_months_ago = self.current_month - relativedelta(months=4)
+        self.eleven_months_ago = self.current_month - relativedelta(months=11)
+        self.next_month = self.current_month + relativedelta(months=1)
         self.category_1 = mommy.make(CategoryModel, name="Tithe1")
         self.category_2 = mommy.make(CategoryModel, name="Offering1")
         self.category_3 = mommy.make(CategoryModel, name="Expense1")
@@ -31,15 +36,57 @@ class TransactionModelTests(TestCase):
             month=self.a_year_ago, is_first_month=True, balance=100
         )
 
-    # def test_create_monthly_balances(self):
-    #     MonthlyBalance.objects.get(
-    #         month=self.five_months_ago).delete(is_testing=True)
+    def test_create_monthly_balances(self):
+        MonthlyBalance.objects.get(
+            month=self.five_months_ago).delete(is_testing=True)
 
-    #     transaction = mommy.make(TransactionModel, date=self.five_months_ago, category=self.category_1)
+        transaction = mommy.make(
+            TransactionModel, date=self.five_months_ago, category=self.category_1)
 
-    #     balance = MonthlyBalance.objects.get(month=self.five_months_ago)
+        balance = MonthlyBalance.objects.get(month=self.five_months_ago)
 
-    #     self.assertIsNotNone(balance)
+        self.assertIsNotNone(balance)
+
+    def test_transaction_without_initial_balance(self):
+        MonthlyBalance.objects.all().delete()
+
+        with self.assertRaises(ValidationError):
+            transaction = mommy.make(
+                TransactionModel, date=self.two_years_ago, category=self.category_1)
+
+    def test_add_transaction_future_date(self):
+        with self.assertRaises(ValidationError):
+            transaction = mommy.make(
+                TransactionModel, date=self.next_month, category=self.category_1)
+
+    def test_transactions_date_before_first_month(self):
+        first_month_balance_before = MonthlyBalance.objects.get(
+            is_first_month=True).balance
+        transaction = mommy.make(
+            TransactionModel, date=self.two_years_ago, category=self.category_1)
+        first_month_balance_after = MonthlyBalance.objects.get(
+            is_first_month=True).balance
+
+        self.assertEqual(first_month_balance_before, first_month_balance_after)
+
+    def test_delete_transaction_before_first_month(self):
+        first_month_balance_before = MonthlyBalance.objects.get(
+            is_first_month=True).balance
+        transaction = mommy.make(
+            TransactionModel, date=self.two_years_ago, category=self.category_1, amount=11.11)
+        first_month_balance_after = MonthlyBalance.objects.get(
+            is_first_month=True).balance
+
+        self.assertEqual(first_month_balance_before, first_month_balance_after)
+        print("TRANSAÇÃO:", transaction)
+
+        TransactionModel.objects.get(pk=transaction.pk).delete()
+        first_month_balance_before = MonthlyBalance.objects.get(
+            is_first_month=True).balance
+        first_month_balance_after = MonthlyBalance.objects.get(
+            is_first_month=True).balance
+
+        self.assertEqual(first_month_balance_before, first_month_balance_after)
 
     def test_update_balances_on_create_transactions(self):
         MonthlyBalance.objects.all().delete()
@@ -90,7 +137,8 @@ class TransactionModelTests(TestCase):
             category=self.category_1,
         )
 
-        queried_monthly_balance = MonthlyBalance.objects.get(month=self.current_month)
+        queried_monthly_balance = MonthlyBalance.objects.get(
+            month=self.current_month)
         self.assertEqual(queried_monthly_balance.balance, Decimal(200))
 
         additional_transaction = mommy.make(
@@ -101,49 +149,103 @@ class TransactionModelTests(TestCase):
             category=self.category_2,
         )
 
-        queried_monthly_balance = MonthlyBalance.objects.get(month=self.current_month)
+        queried_monthly_balance = MonthlyBalance.objects.get(
+            month=self.current_month)
 
         self.assertEqual(queried_monthly_balance.balance, Decimal(300))
 
-        # Edit the initial transaction's amount to 150
         transaction.amount = 150
         transaction.description = "Updated Description"
         transaction.save()
 
-        # Confirm the updated MonthlyBalance after the edited transaction
-        queried_monthly_balance = MonthlyBalance.objects.get(month=self.current_month)
+        queried_monthly_balance = MonthlyBalance.objects.get(
+            month=self.current_month)
         self.assertEqual(queried_monthly_balance.balance, Decimal(350))
 
-        # additional_transaction.amount = 50
-        # additional_transaction.save()
+        additional_transaction.amount = 50
+        additional_transaction.save()
 
-        # queried_monthly_balance = MonthlyBalance.objects.get(
-        #     month=self.current_month)
-        # self.assertEqual(queried_monthly_balance.balance, Decimal(300))
+        queried_monthly_balance = MonthlyBalance.objects.get(
+            month=self.current_month)
+        self.assertEqual(queried_monthly_balance.balance, Decimal(300))
 
-        # updated_transaction = TransactionModel.objects.get(pk=transaction.pk)
-        # self.assertEqual(updated_transaction.amount, 150)
-        # self.assertEqual(updated_transaction.description,
-        #                  "Updated Description")
+        updated_transaction = TransactionModel.objects.get(pk=transaction.pk)
+        self.assertEqual(updated_transaction.amount, 150)
+        self.assertEqual(updated_transaction.description,
+                         "Updated Description")
 
-        # negative_transaction = mommy.make(
-        #     TransactionModel, amount=-5, date=self.current_month, category=self.category_2,
-        # )
-        # queried_monthly_balance = MonthlyBalance.objects.get(
-        #     month=self.current_month)
-        # self.assertEqual(queried_monthly_balance.balance, Decimal(295))
+        negative_transaction = mommy.make(
+            TransactionModel, amount=-5, date=self.current_month, category=self.category_2,
+        )
+        queried_monthly_balance = MonthlyBalance.objects.get(
+            month=self.current_month)
+        self.assertEqual(queried_monthly_balance.balance, Decimal(295))
 
-        # negative_transaction.amount = 5
-        # negative_transaction.save()
-        # queried_monthly_balance = MonthlyBalance.objects.get(
-        #     month=self.current_month)
-        # self.assertEqual(queried_monthly_balance.balance, Decimal(305))
+        negative_transaction.amount = 5
+        negative_transaction.save()
+        queried_monthly_balance = MonthlyBalance.objects.get(
+            month=self.current_month)
+        self.assertEqual(queried_monthly_balance.balance, Decimal(305))
+
+    def test_edit_transaction_before_first_month(self):
+        transaction = mommy.make(
+            TransactionModel, date=self.two_years_ago, category=self.category_1)
+
+        first_month_balance_before = MonthlyBalance.objects.get(
+            is_first_month=True).balance
+
+        transaction.amount = 10
+        transaction.save()
+
+        first_month_balance_after = MonthlyBalance.objects.get(
+            is_first_month=True).balance
+
+        self.assertEqual(first_month_balance_before, first_month_balance_after)
+
+    def test_different_operations_before_first_month(self):
+        transaction_1 = mommy.make(
+            TransactionModel, date=self.two_years_ago,
+            category=self.category_1, amount=10)
+        transaction_2 = mommy.make(
+            TransactionModel, date=self.two_years_ago,
+            category=self.category_1, amount=10)
+
+        first_month_balance_before = MonthlyBalance.objects.get(
+            is_first_month=True).balance
+
+        transaction_1.amount = 5
+        transaction_1.save()
+        # Just to make sure we see changes in the transactions
+        self.assertEqual(transaction_1.amount, 5)
+
+        first_month_balance_after = MonthlyBalance.objects.get(
+            is_first_month=True).balance
+
+        self.assertEqual(first_month_balance_before, first_month_balance_after)
+
+        transaction_2.delete()
+        with self.assertRaises(ObjectDoesNotExist):
+            TransactionModel.objects.get(pk=transaction_2.pk)
+
+        first_month_balance_after = MonthlyBalance.objects.get(
+            is_first_month=True).balance
+
+        self.assertEqual(first_month_balance_before, first_month_balance_after)
+
+        transaction_3 = mommy.make(
+            TransactionModel, date=self.two_years_ago,
+            category=self.category_1, amount=10)
+
+        first_month_balance_after = MonthlyBalance.objects.get(
+            is_first_month=True).balance
+
+        self.assertEqual(first_month_balance_before, first_month_balance_after)
 
     def test_delete_transaction(self):
         transactions = []
         n = 0
         for i in range(4):
-            transaction_date = self.a_year_ago + timedelta(
+            transaction_date = self.eleven_months_ago + timedelta(
                 days=i * 3 * 30
             )  # Every three months
 
@@ -256,7 +358,8 @@ class TransactionModelTests(TestCase):
 
                 if total_amount is not None:
                     try:
-                        previous_month = balance.month - relativedelta(months=1)
+                        previous_month = balance.month - \
+                            relativedelta(months=1)
                         previous_month_balance = MonthlyBalance.objects.get(
                             month=previous_month
                         ).balance
@@ -334,7 +437,8 @@ class TransactionModelTests(TestCase):
 
         initial_monthly_balances = MonthlyBalance.objects.all()
 
-        transactions_to_delete = random.sample(list(TransactionModel.objects.all()), 3)
+        transactions_to_delete = random.sample(
+            list(TransactionModel.objects.all()), 3)
 
         for transaction in transactions_to_delete:
             transaction.delete()
@@ -347,7 +451,8 @@ class TransactionModelTests(TestCase):
             initial_monthly_balances, updated_monthly_balances
         ):
             if initial_balance.is_first_month:
-                self.assertEqual(initial_balance.balance, updated_balance.balance)
+                self.assertEqual(initial_balance.balance,
+                                 updated_balance.balance)
             else:
                 initial_total_amount = TransactionModel.objects.filter(
                     date__year=initial_balance.month.year,
@@ -370,7 +475,8 @@ class TransactionModelTests(TestCase):
                     )
                     self.assertEqual(updated_balance.balance, expected_balance)
                 else:
-                    self.assertEqual(updated_balance.balance, initial_balance.balance)
+                    self.assertEqual(updated_balance.balance,
+                                     initial_balance.balance)
 
 
 if __name__ == "__main__":

@@ -25,5 +25,4 @@ def get_aggregate_transactions_by_category(year, month, is_positive=True):
     aggregated_transactions_dict = {
         key: "{:.2f}".format(value) for key, value in transactions_by_category.items()
     }
-    print("VALOR AGREGADO:", aggregated_transactions_dict)
     return aggregated_transactions_dict

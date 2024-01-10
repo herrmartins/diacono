@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %} {% load static %}{% block content %}
+
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{%endif %}
+
+{% if 'edit' in request.resolver_match.view_name %}
+    <p class="fs-3 fw-light">Altere o post {{post.title}}</p>
+{% else %}
+    <p class="fs-3 fw-light">Escreva um post..</p>
+{% endif %}
+<div class="container my-2">
+  <div class="row justify-content-center">
+    <div class="col-md-auto">
+        <form method="POST", action="{% url 'blog:create' %}">
+          {% csrf_token %}
+          {{form.media}}
+          {{form.as_p}}
+          <input type="submit" value="Cadastrar" class="btn btn-primary">
+        </form>
+    </div>
+    <div class="row">
+        <a href="{% url 'blog:create-category' %}"><p class="fs-3">Adicionar categoria</p></a>
+    </div>
+{% endblock %}

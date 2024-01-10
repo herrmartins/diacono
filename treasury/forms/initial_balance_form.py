@@ -5,7 +5,7 @@ from treasury.models import MonthlyBalance
 class InitialBalanceForm(forms.ModelForm):
     class Meta:
         model = MonthlyBalance
-        fields = ["balance", "month"]
+        fields = ["balance", "month", "is_first_month"]
 
     balance = forms.DecimalField(
         label="Saldo Inicial",
@@ -16,15 +16,20 @@ class InitialBalanceForm(forms.ModelForm):
 
     month = forms.DateField(
         label="Selecione o mês e ano",
-        widget=forms.DateInput(attrs={"type": "month", "class": "form-control"}),
+        widget=forms.DateInput(
+            attrs={"type": "month", "class": "form-control"}),
         input_formats=["%Y-%m"],
+    )
+
+    is_first_month = forms.BooleanField(
+        widget=forms.HiddenInput(attrs={"value": "True"}),
+        required=False
     )
 
     def clean(self):
         cleaned_data = super().clean()
         month = cleaned_data.get("month")
-        print("MÊS:", month)
-        if month is not None and (month.month < 1 or month.month > 12):  # Extract month value for comparison
+        if month is not None and (month.month < 1 or month.month > 12):
             raise forms.ValidationError("Month must be between 1 and 12.")
 
         return cleaned_data

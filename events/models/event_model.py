@@ -2,6 +2,7 @@ from django.db import models
 from core.models import BaseModel
 from users.models import CustomUser
 from django.utils import timezone
+from datetime import timedelta
 
 
 class EventManager(models.Manager):
@@ -12,7 +13,12 @@ class EventManager(models.Manager):
             month_events = self.filter(
                 start_date__year=current_date.year,
                 start_date__month=month,
-                end_date__gte=current_date,
+                end_date__gte=current_date
+            ) | self.filter(
+                start_date__year=current_date.year,
+                start_date__month=month,
+                end_date__isnull=True,
+                start_date__gte=current_date - timedelta(days=5)
             )
             events_by_month[month] = month_events
         return events_by_month

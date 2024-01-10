@@ -45,8 +45,16 @@
   </form>
 
   <div class="d-flex" id="search_result"></div>
-  <div class="col-12">
-    <div class="d-flex my-2 justify-content-center">
+
+
+
+<div class="container text-center">
+  <p class="fs-3 fw-light">Bem vindo à secretaria, {{user.first_name}}...</p>
+</div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4 mb-2">
       <div class="card mx-2" style="width: 18rem;">
         <img src="{% static 'img/minute.jpg' %}" class="card-img-top" alt="Meeting Image">
         <div class="card-body">
@@ -57,6 +65,9 @@
           <a href="{% url 'secretarial:minute-home' %}" class="btn btn-primary">Acessar</a>
         </div>
       </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4 mb-2">
       <div class="card mx-2" style="width: 18rem;">
         <img src="{% static 'img/users.jpg' %}" class="card-img-top" alt="Meeting Image">
         <div class="card-body">
@@ -68,8 +79,36 @@
         </div>
       </div>
     </div>
+
+
+    <div class="col-md-6 col-lg-4 mb-2">
+      <div class="card mx-2" style="width: 18rem;">
+        <img src="{% static 'img/events.jpg' %}" class="card-img-top" alt="Meeting Image">
+        <div class="card-body">
+          <h5 class="card-title">Eventos</h5>
+          <p class="card-text">Gerenciamento de Eventos. Nesta seção, você pode cadastrar e editar eventos.</p>
+          <a href="{% url 'events:register' %}" class="btn btn-primary">Acessar</a>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-6 col-lg-4 mb-2">
+      <div class="card mx-2" style="width: 18rem;">
+        <img src="{% static 'img/blog.jpg' %}" class="card-img-top" alt="Meeting Image">
+        <div class="card-body">
+          <h5 class="card-title">Blog</h5>
+          <p class="card-text">Nesta seção você pode escrever seus posts de blog para edificação da igreja e de outros usuários.</p>
+          <a href="{% url 'blog:create' %}" class="btn btn-primary">Acessar</a>
+        </div>
+      </div>
+    </div>
+    
   </div>
 </div>
+
+
+
 <script type="module" src="{% static 'js/secretarial_search.js' %}"></script>
 
 {% endblock %}

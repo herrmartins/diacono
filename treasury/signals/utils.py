@@ -11,7 +11,6 @@ from treasury.exceptions import NoInitialMonthlyBalance
 
 
 def get_month_balance(month):
-    print("BUSCANDO MÊS:", month)
     previous_month = month
     try:
         balance = MonthlyBalance.objects.get(month=previous_month).balance
