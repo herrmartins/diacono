@@ -7,9 +7,9 @@ class TestMakeMinute(unittest.TestCase):
         self.maxDiff = None
         name_dict = {
             "meeting_date": "2023-12-31",
-            "number_of_atendees": 10,
+            "number_of_attendees": 10,
             "church": "Sample Church",
-            "presidente": "Sample President",
+            "presidente": "president",
             "secretary": "Sample Secretary",
             "minute_reading_acceptance_proposal": "Sample Minute Reading Acceptance Proposal",
             "minute_reading_acceptance_proposal_support": "Supporting Member",
@@ -23,7 +23,7 @@ class TestMakeMinute(unittest.TestCase):
 
         expected_output = (
             "Em 31 de dezembro de 2023, reuniram-se 10 membros da Sample Church "
-            "sob a liderança do Sample President. Ele orou e declarou aberta a sessão. "
+            "sob a liderança do Pr. president. Ele orou e declarou aberta a sessão. "
             "<p>O secretário Sample Secretary leu a ata da reunião anterior. "
             "Sample Minute Reading Acceptance Proposal propôs a aceitação da ata lida "
             "e Supporting Member apoiou a proposta, havendo unanimidade por parte dos demais.</p> "
@@ -34,7 +34,7 @@ class TestMakeMinute(unittest.TestCase):
             "<p>Não havendo assuntos em pauta, o pastor encerrou a sessão e eu Sample Secretary, "
             "primeiro secretário, lavrei a presente ata que vai assinada por mim e pelo pastor.</p>"
             "31 de dezembro de 2023, <p> Primeiro secretário:</p><p>Sample Secretary</p>"
-            "<p> Pastor:</p><p>Sample President</p>"
+            "<p> Pastor:</p><p>president</p>"
         )
 
         actual_output = make_minute(name_dict)

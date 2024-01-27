@@ -3,6 +3,7 @@ from core.models import BaseModel
 from users.models import CustomUser
 from django.utils import timezone
 from datetime import timedelta
+from django.core.exceptions import ValidationError
 
 
 class EventManager(models.Manager):
@@ -19,7 +20,7 @@ class EventManager(models.Manager):
                 start_date__month=month,
                 end_date__isnull=True,
                 start_date__gte=current_date - timedelta(days=5)
-            )
+            ).order_by("start_date", "end_date")
             events_by_month[month] = month_events
         return events_by_month
 
@@ -49,6 +50,11 @@ class Event(BaseModel):
         "events.EventCategory", on_delete=models.PROTECT, null=True, blank=True)
 
     objects = EventManager()
+
+    def clean(self):
+        # Check if the start_date is in the past
+        if self.start_date and self.start_date < timezone.now():
+            raise ValidationError({'start_date': 'The start date cannot be in the past.'})
 
     def __str__(self):
         return self.title

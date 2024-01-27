@@ -1,86 +1,98 @@
 {% extends 'core/base.html' %} {% load static %}{% block content %}
-
-
-{% if messages %}
-<div class="alert alert-dismissible">
-  {% for message in messages %}
-  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}<strong>Error:</strong>{% endif %}
-    {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  {% endfor %}
-</div>
-{% endif %}
-
-<!-- Assuming you have a base.html template that includes Bootstrap CSS and other necessary files -->
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
 <!-- Content section -->
 <div class="container mt-4">
-  <div class="row">
-    <!-- Post loop -->
-    {% for post in posts %}
-    <div class="col-md-8 offset-md-2 mb-4">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="card-title">{{ post.title }}</h5>
-          <p class="card-text">
-            <small class="text-muted">Postado por {{ post.author.first_name }} {{ post.author.last_name }} em {{ post.created }}{% if post.created != post.modified %}, atualizado em {{post.modified}}. {% endif %}</small>
-            {% if post.author == request.user %}
-                <!-- Edit link for the author -->
-                <a href="{% url 'blog:edit' post.id %}">
-                    <img src="{% static 'img/edit-black.svg' %}" alt="Editar" width="20" height="20">
-                </a>
-            {% endif %}
-          </p>
-        </div>
-        <div class="card-body">
-          <p class="card-text">{{ post.content|safe }}</p>
-        </div>
-        <div class="card-footer">
-          <small class="text-muted">Category: {{ post.category }}</small>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-    <!-- End of Post loop -->
-  </div>
+    <div class="row">
+        <!-- Post loop -->
+        {% for post in posts %}
+        <div class="col-md-8 offset-md-2 mb-4" x-data="{ showComments: false }">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text">
+                        <small class="text-muted">Postado por {{ post.author.first_name }} {{ post.author.last_name }}
+                            em {{ post.created }}{% if post.created != post.modified %}, atualizado em
+                            {{post.modified}}. {% endif %}</small>
+                        {% if post.author == request.user %}
+                        <!-- Edit link for the author -->
+                        <a href="{% url 'blog:edit' post.id %}">
+                            <img src="{% static 'img/edit-black.svg' %}" alt="Editar" width="20" height="20">
+                        </a>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ post.content|safe }}</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <small class="text-muted">Category: {{ post.category }}</small>
+                    <i class="bi bi-chat-left-dots" x-on:click="showComments = !showComments"
+                        data-post-id="{{ post.id }}"></i>
+                </div>
 
-  <!-- Pagination controls -->
+                <div x-show="showComments" class="comments" id="comments-{{ post.id }}">
+                    <!-- Comments will be rendered here dynamically -->
+                </div>
+                <!-- End of Comments section -->
+            <div x-show="showComments" class="card-footer py-3 border-0" style="background-color: #f8f9fa;">
+                <div class="d-flex flex-start w-100">
+                    <img class="rounded-circle shadow-1-strong me-3" src="{% if user.profile_image %}
+                    {{ user.profile_image.url }} {% else %} {% static 'img/user.png' %} {% endif %}" alt="avatar" width="40" height="40" />
+                    <div class="form-outline w-100">
+                        <textarea class="form-control" id="commentContent" rows="4"
+                            style="background: #fff;" required></textarea>
+                        <label class="form-label" for="commentContent">Seu comentário...</label>
+                    </div>
+                </div>
+                <div class="float-end mt-2 pt-1">
+                    <button type="button" class="btn btn-primary btn-sm" id="postCommentBtn">Postar</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        {% endfor %}
+        <!-- End of Post loop -->
+    </div>
+</div>
+
+
+<!-- Pagination controls -->
 <div class="row">
     <div class="col-md-12">
-        <!-- Your other content -->
 
         <!-- Pagination -->
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 {% if is_paginated %}
-                    {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page=1">&laquo; Primeira</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
-                        </li>
-                    {% endif %}
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">&laquo; Primeira</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                </li>
+                {% endif %}
 
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#">Página {{ page_obj.number }} de {{ paginator.num_pages }}</a>
-                    </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Página {{ page_obj.number }} de {{ paginator.num_pages }}</a>
+                </li>
 
-                    {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Próxima</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ paginator.num_pages }}">Última &raquo;</a>
-                        </li>
-                    {% endif %}
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Próxima</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ paginator.num_pages }}">Última &raquo;</a>
+                </li>
+                {% endif %}
                 {% endif %}
             </ul>
         </nav>
     </div>
 </div>
-  <!-- End of Pagination controls -->
+<!-- End of Pagination controls -->
 </div>
+<script type="module" src="{% static 'js/comment_fetch.js' %}"
+    data-post-ids="{% for post in posts %}{{ post.id }},{% endfor %}"></script>
 {% endblock %}

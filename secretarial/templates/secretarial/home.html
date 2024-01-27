@@ -2,15 +2,7 @@
 {% load static %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}" />
-{% if messages %}
-<ul class="messages">
-  {% for message in messages %}
-  <li>
-    {{ message }}
-  </li>
-  {% endfor %}
-</ul>
-{% endif %}
+
 <div class="container text-center">
   <p class="fs-3 fw-light">Bem vindo à secretaria, {{user.first_name}}...</p>
 </div>
@@ -54,7 +46,7 @@
 
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col-md-6 col-lg-4 mb-2">
+    <div class="col-auto mb-2">
       <div class="card mx-2" style="width: 18rem;">
         <img src="{% static 'img/minute.jpg' %}" class="card-img-top" alt="Meeting Image">
         <div class="card-body">
@@ -67,7 +59,7 @@
       </div>
     </div>
 
-    <div class="col-md-6 col-lg-4 mb-2">
+    <div class="col-auto mb-2">
       <div class="card mx-2" style="width: 18rem;">
         <img src="{% static 'img/users.jpg' %}" class="card-img-top" alt="Meeting Image">
         <div class="card-body">
@@ -81,7 +73,7 @@
     </div>
 
 
-    <div class="col-md-6 col-lg-4 mb-2">
+    <div class="col-auto mb-2">
       <div class="card mx-2" style="width: 18rem;">
         <img src="{% static 'img/events.jpg' %}" class="card-img-top" alt="Meeting Image">
         <div class="card-body">
@@ -93,13 +85,13 @@
     </div>
 
 
-    <div class="col-md-6 col-lg-4 mb-2">
+    <div class="col-auto mb-2">
       <div class="card mx-2" style="width: 18rem;">
         <img src="{% static 'img/blog.jpg' %}" class="card-img-top" alt="Meeting Image">
         <div class="card-body">
           <h5 class="card-title">Blog</h5>
           <p class="card-text">Nesta seção você pode escrever seus posts de blog para edificação da igreja e de outros usuários.</p>
-          <a href="{% url 'blog:create' %}" class="btn btn-primary">Acessar</a>
+          <a href="{% url 'blog:create-post' %}" class="btn btn-primary">Acessar</a>
         </div>
       </div>
     </div>

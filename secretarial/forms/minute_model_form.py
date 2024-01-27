@@ -3,9 +3,18 @@ from django.forms import ModelForm
 from secretarial.models import MeetingMinuteModel
 from datetime import date
 from ckeditor.widgets import CKEditorWidget
+from users.models import CustomUser
 
 
 class MinuteModelForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(MinuteModelForm, self).__init__(*args, **kwargs)
+
+        self.fields["president"].queryset = CustomUser.objects.filter(
+            is_pastor=True)
+        self.fields["secretary"].queryset = CustomUser.objects.filter(
+            is_secretary=True)
+
     class Meta:
         model = MeetingMinuteModel
         fields = (

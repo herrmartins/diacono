@@ -16,5 +16,5 @@ class EventCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     success_message = "Evento criado com sucesso..."
 
     def form_invalid(self, form):
-        messages.error(self.request, "Erro no formulário...",)
+        messages.error(self.request, "Erro no formulário...")
         return super().form_invalid(form)

@@ -30,7 +30,6 @@ class Post(BaseModel):
 @receiver(pre_save, sender=Post)
 def update_post_modified_date(sender, instance, **kwargs):
     current_date = datetime.now().date()
-    print("ESTAMOS NO SINAL")
     if instance.pk:
         pre_save.disconnect(update_post_modified_date, sender=Post)
         instance.modified = current_date

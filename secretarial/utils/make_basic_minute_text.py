@@ -2,15 +2,16 @@ from .date_utils import date_to_words
 
 
 def make_minute(name_dict):
+    meeting_date_str = name_dict["meeting_date"]
     text = [
         "Em ",
         "meeting_date",
         "reuniram-se ",
-        "number_of_atendees",
+        "number_of_attendees",
         " membros da ",
         "church",
-        " sob a liderança do ",
-        "presidente",
+        " sob a liderança do Pr. ",
+        "president",
         ". Ele orou e declarou aberta a sessão. <p>O secretário ",
         "secretary",
         " leu a ata da reunião anterior. ",
@@ -51,11 +52,12 @@ def make_minute(name_dict):
     result_text = []
     for word in text:
         if word in name_dict:
-            if not word == "meeting_date":
-                result_text.append(str(name_dict.get(word)))
+            if word == "meeting_date":
+                result_text.append(date_to_words(str(meeting_date_str)))
             else:
-                result_text.append(str(date_to_words(name_dict[word])))
+                result_text.append(str(name_dict.get(word)))
         else:
             result_text.append(word)
+
     final_text = "".join(result_text)
     return final_text

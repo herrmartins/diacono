@@ -1,7 +1,7 @@
 from django.views.generic import CreateView
 from secretarial.forms import MinuteModelForm
-from secretarial.models import MinuteProjectModel
-from secretarial.models import MinuteExcerptsModel
+from secretarial.models import (
+    MinuteProjectModel, MeetingMinuteModel, MinuteExcerptsModel)
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
@@ -10,6 +10,7 @@ class MinuteCreateView(PermissionRequiredMixin, CreateView):
     form_class = MinuteModelForm
     template_name = "secretarial/minute_created.html"
     context_object_name = "minute"
+    model = MeetingMinuteModel
 
     # Tirei, parece inútil, não tem url pattern para pegar PK... Vou ter um tempo..
     """ def get_initial(self):

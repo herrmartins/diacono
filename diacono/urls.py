@@ -13,6 +13,7 @@ urlpatterns = [
     path('treasury/', include('treasury.urls')),
     path('events/', include('events.urls')),
     path("api/", include("api.urls")),
+    path("api2/", include("api2.urls")),
     path("blog/", include("blog.urls")),
 ]
 if settings.DEBUG:

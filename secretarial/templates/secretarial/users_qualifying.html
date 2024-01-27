@@ -2,13 +2,7 @@
 {% block content %}
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css'%}">
-{% if messages %}
-<ul class="messages">
-  {% for message in messages %}
-  <li>{{ message }}</li>
-  {% endfor %}
-</ul>
-{% endif %}
+
 <div class="container">
   <div class="container text-center">
     <p class="fs-3 fw-light">Sessão de usuários</p>

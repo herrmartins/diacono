@@ -4,6 +4,8 @@ from dateutil.relativedelta import relativedelta
 from datetime import date
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Sum
+from django.shortcuts import redirect
+from django.contrib import messages
 
 
 class TransactionMonthArchiveView(PermissionRequiredMixin, MonthArchiveView):
@@ -14,6 +16,24 @@ class TransactionMonthArchiveView(PermissionRequiredMixin, MonthArchiveView):
     allow_future = False
     template_name = "treasury/detailed_report.html"
     context_object_name = "finance_entries"
+
+    def get(self, request, *args, **kwargs):
+        # Get the year and month from the URL parameters
+        year = self.get_year()
+        month = self.get_month()
+
+        # Check if there are any transactions for the given month and year
+        transactions_exist = TransactionModel.objects.filter(
+            date__year=year, date__month=month
+        ).exists()
+
+        # If no transactions exist, add a message and redirect
+        if not transactions_exist:
+            messages.info(request, "Não há transações para o mês selecionado.")
+            return redirect('/treasury/reports')
+
+        # If transactions exist, proceed with the normal flow
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -34,7 +54,6 @@ class TransactionMonthArchiveView(PermissionRequiredMixin, MonthArchiveView):
             date__month=context["month"], date__year=context["year"]
         ).order_by("date")
 
-
         monthly_sum = transactions.aggregate(total_amount=Sum("amount"))
         total_amount_monthly_sum = monthly_sum.get("total_amount", 0)
         formatted_monthly_sum = "{:.2f}".format(total_amount_monthly_sum)
@@ -43,7 +62,8 @@ class TransactionMonthArchiveView(PermissionRequiredMixin, MonthArchiveView):
 
         previous_month += relativedelta(months=-1)
         try:
-            balance_for_calc = MonthlyBalance.objects.get(month=previous_month).balance
+            balance_for_calc = MonthlyBalance.objects.get(
+                month=previous_month).balance
             previous_month_balance = balance_for_calc
         except MonthlyBalance.DoesNotExist:
             balance_for_calc = 0

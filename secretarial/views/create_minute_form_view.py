@@ -1,4 +1,3 @@
-from typing import Any
 from django.views.generic import FormView
 from secretarial.forms import MinuteModelForm
 from secretarial.models import MinuteProjectModel, MinuteTemplateModel
@@ -40,7 +39,7 @@ class CreateMinuteFormView(PermissionRequiredMixin, FormView):
                 initial["president"] = minute_data.president
                 initial["secretary"] = minute_data.secretary
                 initial["meeting_date"] = minute_data.meeting_date.isoformat()
-                initial["number_of_atendees"] = minute_data.number_of_attendees
+                initial["number_of_attendees"] = minute_data.number_of_attendees
                 initial["body"] = minute_data.body
                 initial["agenda"] = minute_data.meeting_agenda.all()
             except MinuteProjectModel.DoesNotExist:

@@ -17,3 +17,7 @@ from .excerpt_create_view import ExcerptCreateView
 from .excerpt_update_view import ExcerptUpdateView
 from .excerpt_detail_view import ExcerptDetailView
 from .excerpt_delete_view import ExcerptDeleteView
+from .template_create_view import TemplateCreateView
+from .template_form_view import TemplateFormView
+from .agenda_form_view import AgendaFormView
+from .agenda_create_view import AgendaCreateView

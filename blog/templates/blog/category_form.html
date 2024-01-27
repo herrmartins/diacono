@@ -1,17 +1,6 @@
 {% extends 'core/base.html' %} {% load static %}{% block content %}
 
 
-{% if messages %}
-<ul class="messages">
-  {% for message in messages %}
-  <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
-    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
-    {{ message }}
-    </li>
-    {% endfor %}
-</ul>
-{%endif %}
-
 {% if 'edit-category' in request.resolver_match.view_name %}
 <p class="fs-3 fw-light">Altere a categoria</p>
 {% else %}

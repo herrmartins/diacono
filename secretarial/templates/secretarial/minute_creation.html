@@ -13,12 +13,11 @@
           <div class="row my-3">
             <div class="col-4">
               <select name="minute_excerpts" class="form-select" id="id_minute_excerpts" multiple>
-
-
-                {% for e in excerpts_list %}
-                <option value="{{e.id}}" selected>{{e}}</option>
-                {% endfor %}
+                  {% for e in excerpts_list %}
+                      <option value="{{e.id}}">{{e}}</option>
+                  {% endfor %}
               </select>
+
             </div>
             <div class="col-8 mx-auto">
               <textarea name="" id="excerpt_t_area" class="form-control", rows=4></textarea>

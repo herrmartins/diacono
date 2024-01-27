@@ -36,6 +36,7 @@ class MinuteCreateViewTest(TestCase):
         # Create necessary objects for context data
         minute_excerpt_1 = MinuteExcerptsModel.objects.create(excerpt="Excerpt 1")
         minute_excerpt_2 = MinuteExcerptsModel.objects.create(excerpt="Excerpt 2")
+        print("TESTES:", minute_excerpt_1, minute_excerpt_2)
 
         self.client.login(username="testuser", password="password123")
         url = reverse("secretarial:create-minute-view")  # Change to actual URL

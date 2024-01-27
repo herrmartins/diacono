@@ -3,6 +3,7 @@ from events.models import Event
 from users.models import CustomUser
 from django.core.exceptions import ValidationError
 from datetime import datetime
+from django.utils import timezone
 
 
 class EventForm(forms.ModelForm):
@@ -19,6 +20,17 @@ class EventForm(forms.ModelForm):
             "contact_name",
             "category",
         ]
+        labels = {
+            "start_date": "Início",
+            "end_date": "Final",
+            "price": "Preço",
+            "contact_name": "Contato",
+            "contact_user": "Contato",
+            "title": "Título",
+            "description": "Descrição",
+            "location": "Local",
+            "category": "Categoria",
+        }
         widgets = {
             "user": forms.HiddenInput(),
             "start_date": forms.DateTimeInput(
@@ -58,6 +70,9 @@ class EventForm(forms.ModelForm):
 
         def clean_start_date(self):
             start_date = self.cleaned_data.get("start_date")
+            if start_date and start_date < timezone.now():
+                raise ValidationError('A data não pode ser passada')
+
             if start_date:
                 if isinstance(start_date, datetime):
                     start_date = start_date.strftime("%Y-%m-%d %H:%M:%S")

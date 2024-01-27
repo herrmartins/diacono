@@ -15,4 +15,4 @@ class Comment(BaseModel):
         verbose_name_plural = "Comentários"
 
     def __str__(self):
-        return self.title
+        return f"{self.author}"

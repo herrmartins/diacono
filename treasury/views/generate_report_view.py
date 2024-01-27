@@ -29,7 +29,6 @@ class GenerateMonthlyReportView(PermissionRequiredMixin, TemplateView):
         current_year = current_date.year
 
         if int(month) == current_month and int(year) == current_year:
-            print("Não se pode criar relatório analítico do mês em curso...")
             raise Http404("Não se pode criar relatório analítico do mês em curso...")
 
         try:

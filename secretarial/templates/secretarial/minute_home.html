@@ -2,15 +2,6 @@
 {% load static %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-{% if messages %}
-<ul class="messages">
-  {% for message in messages %}
-  <li>
-    {{ message }}
-  </li>
-  {% endfor %}
-</ul>
-{% endif %}
 <div class="container">
   <div class="container text-center">
     <p class="fs-3 fw-light">Registro de Reuniões</p>
@@ -36,7 +27,7 @@
 
   </div>
   <div class="container-md">
-    <form>
+    <form id="search-form">
       <div class="input-group input-group-lg">
         <div class="form-floating">
           <input type="text" id="searched" class="form-control" placeholder="Digite o critério de busca..." />
@@ -96,5 +87,5 @@
   </div>
 
 </div>
-<script src="{% static 'js/search_members.js' %}"></script>
+<script type="module" src="{% static 'js/secretarial_search.js' %}"></script>
 {% endblock %}

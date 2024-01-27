@@ -1,14 +1,5 @@
 {% extends 'core/base.html' %}
 {% load static%}
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li>
-        {{ message }}
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
 {% block content %}
 <div class="container text-center">
     <p class="fs-3 fw-light">Relatório salvo...</p>

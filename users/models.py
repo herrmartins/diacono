@@ -25,7 +25,8 @@ class CustomUser(AbstractUser):
     # se for estrangeiro, não vai dar.
     # Como, a princípio, não serão milhares de usuários,
     # vai dar certo.
-    phone_number = PhoneNumberField(blank=True, unique=True, region="BR", null=True)
+    phone_number = PhoneNumberField(
+        blank=True, unique=True, region="BR", null=True)
     is_whatsapp = models.BooleanField(blank=True, default=False)
     about = models.TextField(blank=True)
     married_to = models.ForeignKey(
@@ -60,7 +61,7 @@ class CustomUser(AbstractUser):
         )
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} ({self.username})"
+        return f"{self.first_name} {self.last_name}"
 
 
 @receiver(post_save, sender=CustomUser)
@@ -111,7 +112,8 @@ def set_initial_user_type(sender, instance, created, **kwargs):
                 instance.groups.add(regular_group)
             elif instance.is_pastor:
                 if instance.is_secretary and instance.is_treasurer:
-                    instance.groups.add(pastor_group, secretarial_group, treasury_group)
+                    instance.groups.add(
+                        pastor_group, secretarial_group, treasury_group)
                 elif instance.is_secretary:
                     instance.groups.add(pastor_group, secretarial_group)
                 elif instance.is_treasurer:
