@@ -42,7 +42,10 @@ class GenerateMonthlyReportView(PermissionRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        locale.setlocale(locale.LC_TIME, "pt_BR.UTF-8")
+        try:
+            locale.setlocale(locale.LC_TIME, "pt_BR.UTF-8")
+        except locale.Error:
+            print("Locale pt_BR.UTF-8 not available, using default locale.")
 
         year = self.kwargs.get("year")
         month = self.kwargs.get("month")

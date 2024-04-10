@@ -13,7 +13,12 @@ from core.core_context_processor import context_user_data
 
 @login_required
 def GenerateMonthlyPDFAnReportView(request, pk):
-    locale.setlocale(locale.LC_ALL, "pt_BR")
+
+    # locale.setlocale(locale.LC_ALL, "pt_BR")
+    try:
+        locale.setlocale(locale.LC_TIME, "pt_BR.UTF-8")
+    except locale.Error:
+        print("Locale pt_BR.UTF-8 not available, using default locale.")
     if request.user.has_perm("treasury.view_transactionmodel"):
         an_report = MonthlyReportModel.objects.get(pk=pk)
 

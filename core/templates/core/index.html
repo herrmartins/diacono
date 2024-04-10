@@ -19,9 +19,7 @@
 
 {% else %}
 <div class="container">
-  <div class="container">
-    <p class="fs-3">Veja nosso último post:</p>
-  </div>
+  <p></p>
     <div class="col-md-8 offset-md-2 mb-4">
       <div class="card">
         <div class="card-header">
@@ -34,7 +32,7 @@
           <p class="card-text">{{ post.content|safe }}</p>
         </div>
         <div class="card-footer">
-          <small class="text-muted">Category: {{ post.category }}</small>
+          <small class="text-muted">Categoria: {{ post.category }}</small>
         </div>
       </div>
     </div>
