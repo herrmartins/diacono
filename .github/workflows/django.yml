@@ -28,5 +28,6 @@ jobs:
     - name: Run Tests
       env: 
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        DEBUG: 'True'  # Set DEBUG environment variable here, adjust the value as needed
       run: |
         python manage.py test
