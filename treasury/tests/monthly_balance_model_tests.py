@@ -42,7 +42,6 @@ class MonthlyBalanceModelTest(TestCase):
             mommy.make(TransactionModel, category=self.category_1)
 
     def test_monthly_balance_creation_year_ago(self):
-        print("TESTE 4")
         MonthlyBalance.objects.all().delete()
         MonthlyBalance.objects.create(
             month=self.a_year_ago,
@@ -52,8 +51,6 @@ class MonthlyBalanceModelTest(TestCase):
         balances = MonthlyBalance.objects.all().order_by('month')
 
     def test_monthly_balance_reconstruction(self):
-        print("TESTE 5")
-
         MonthlyBalance.objects.all().delete()
         MonthlyBalance.objects.create(
             month=self.a_year_ago,
@@ -99,7 +96,7 @@ class MonthlyBalanceModelTest(TestCase):
         self.assertEqual(last_balance.balance, 20)
 
         value = Decimal(random.uniform(10.5, 75.5)).quantize(Decimal('0.01'))
-        #value = 10
+        # value = 10
         other_balance_to_edit = MonthlyBalance.objects.get(
             month=self.a_year_ago)
         other_balance_to_edit.balance += value

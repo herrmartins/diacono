@@ -67,7 +67,8 @@ def GenerateMonthlyPDFTransactionListView(
             "last_month_date": monthly_balance_date.replace(day=last_day_last_month[1]),
         }
 
-        html_index = render_to_string("treasury/export_pdf_template.html", context)
+        html_index = render_to_string(
+            "treasury/export_pdf_template.html", context)
 
         weasyprint_html = weasyprint.HTML(
             string=html_index, base_url="http://127.0.0.1:8000/media"

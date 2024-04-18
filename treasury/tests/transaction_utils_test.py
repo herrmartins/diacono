@@ -21,7 +21,6 @@ class TestTransactionUtils(TestCase):
         self.now = timezone.now().date().replace(day=1)
         self.one_month_ago = timezone.now().date().replace(day=1) - relativedelta(months=1)
         mommy.make(MonthlyBalance, month=self.one_month_ago, is_first_month=True)
-        print("MONTHS", MonthlyBalance.objects.all())
 
         self.category1 = mommy.make(CategoryModel, name="Category 1")
         self.category2 = mommy.make(CategoryModel, name="Category 2")

@@ -1,17 +1,21 @@
 from dateutil.relativedelta import relativedelta
 from treasury.models import MonthlyBalance
-from django.utils import timezone
 from treasury.exceptions import NoInitialMonthlyBalance
+import datetime
 from django.utils import timezone
 
 
 def check_and_create_missing_balances(date):
-    current_month = timezone.now().date().replace(day=1)
+    current_datetime = datetime.datetime.now()
+    current_datetime = timezone.make_aware(current_datetime)
+    current_date = current_datetime.date()
+
+    current_month = current_date.replace(day=1)
     first_monthly_balance = MonthlyBalance.objects.filter(
         is_first_month=True).first()
 
     if not first_monthly_balance:
-        raise NoInitialMonthlyBalance("You must create the initial balance...")
+        raise NoInitialMonthlyBalance("Você precisa criar um balanço inicial...")
 
     from treasury.utils import months_between_dates
     months_diff = months_between_dates(

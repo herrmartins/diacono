@@ -10,7 +10,6 @@ def create_missing_monthly_balances(sender, instance, created, **kwargs):
     current_month = datetime.now().date().replace(day=1)
 
     if created and instance.is_first_month:
-        print("É o primeiro de todos...")
         if instance.month < current_month:
             post_save.disconnect(
                 receiver=create_missing_monthly_balances,

@@ -8,3 +8,4 @@ class MinutesListView(PermissionRequiredMixin, ListView):
     model = MeetingMinuteModel
     template_name = 'secretarial/list_minutes.html'
     context_object_name = 'minutes'
+    ordering = "-meeting_date"

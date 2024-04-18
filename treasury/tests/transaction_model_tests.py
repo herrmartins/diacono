@@ -78,7 +78,6 @@ class TransactionModelTests(TestCase):
             is_first_month=True).balance
 
         self.assertEqual(first_month_balance_before, first_month_balance_after)
-        print("TRANSAÇÃO:", transaction)
 
         TransactionModel.objects.get(pk=transaction.pk).delete()
         first_month_balance_before = MonthlyBalance.objects.get(
