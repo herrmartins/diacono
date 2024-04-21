@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from treasury.models import MonthlyBalance
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from .serializers import (
     MinuteExcerptsSerializer,
@@ -38,12 +39,16 @@ def getCurrentBalance(request):
         date__month=current_month, date__year=current_year
     ).order_by("-date")
 
-    positive_transactions_queryset = transactions_queryset.filter(is_positive=True)
-    negative_transactions_queryset = transactions_queryset.filter(is_positive=False)
+    positive_transactions_queryset = transactions_queryset.filter(
+        is_positive=True)
+    negative_transactions_queryset = transactions_queryset.filter(
+        is_positive=False)
 
     unaware_month_balance = sum(t.amount for t in transactions_queryset)
-    positive_transactions = sum(pt.amount for pt in positive_transactions_queryset)
-    negative_transactions = sum(nt.amount for nt in negative_transactions_queryset)
+    positive_transactions = sum(
+        pt.amount for pt in positive_transactions_queryset)
+    negative_transactions = sum(
+        nt.amount for nt in negative_transactions_queryset)
 
     aware_month_balance = last_month_balance.balance + unaware_month_balance
 
@@ -91,21 +96,17 @@ class TransactionCatListAPIView(generics.ListAPIView):
 
 class TransactionsCreateAPIView(generics.CreateAPIView):
     serializer_class = TransactionModelSerializer
+    # Enable parsing of multipart/form-data
+    parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, *args, **kwargs):
-        serializer = TransactionModelSerializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
 
-        # Validate the data
         if serializer.is_valid():
-            # Create and save a new instance
             serializer.save()
-
-            # Serialize the saved instance
-            serialized_data = TransactionCatModelSerializer(serializer.instance)
-
-            # Return a successful response with the serialized data
-            return Response(serialized_data.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
+            print("ERRO:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -132,7 +133,8 @@ def unifiedSearch(request):
         return Response(serialized_data.data)
 
     elif search_category == "minutes":
-        queryset = MeetingMinuteModel.objects.filter(body__icontains=search_criterion)
+        queryset = MeetingMinuteModel.objects.filter(
+            body__icontains=search_criterion)
         serialized_data = MeetingMinuteModelSerializer(queryset, many=True)
 
         for data in serialized_data.data:
@@ -143,7 +145,8 @@ def unifiedSearch(request):
 
     elif search_category == "templates":
         queryset = MinuteTemplateModel.objects.filter(
-            Q(title__icontains=search_criterion) | Q(body__icontains=search_criterion)
+            Q(title__icontains=search_criterion) | Q(
+                body__icontains=search_criterion)
         )
         serialized_data = MinuteTemplateModelSerializer(queryset, many=True)
 

@@ -1,5 +1,9 @@
 from django.urls import path
-from django.contrib.auth.views import LogoutView
+from django.contrib.auth.views import (
+    LogoutView,
+    PasswordResetView,
+    PasswordResetConfirmView,
+    PasswordResetCompleteView)
 from users.views import (
     UserProfileView,
     UserProfileUpdateView,
@@ -32,5 +36,10 @@ urlpatterns = [
         UpdateUserFunctionView.as_view(),
         name="update-user-functions",
     ),
-]
 
+    path("password/reset", PasswordResetView.as_view(), name="reset-password"),
+    path("password/<uidb64>/<token>/", PasswordResetConfirmView.as_view(),
+         name="confirm-reset-password"),
+    path("password/complete", PasswordResetCompleteView.as_view(),
+         name="complete-reset-password"),
+]

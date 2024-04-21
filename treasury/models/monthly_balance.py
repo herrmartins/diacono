@@ -21,8 +21,11 @@ class MonthlyBalance(BaseModel):
         current_month = timezone.now().date().replace(day=1)
         is_testing = kwargs.pop('is_testing', False)
 
-        if not is_testing and self.month > current_month:
-            raise ValidationError("Cannot add balances with a future month...")
+        if not is_testing:
+            if self.month is None:
+                raise ValidationError("The month field cannot be None.")
+            if self.month > current_month:
+                raise ValidationError("Cannot add balances with a future month...")
 
         super().save(*args, **kwargs)
 

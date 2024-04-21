@@ -97,7 +97,11 @@ class TransactionModelMethodsTests(TestCase):
 
     def test_delete_transaction(self):
         transaction = self.create_transaction()
+        print(
+            f"File exists before deletion: {self.storage.exists(transaction.acquittance_doc.name)}")
         transaction.delete()
+        print(
+            f"File exists after deletion: {self.storage.exists(transaction.acquittance_doc.name)}")
         self.assertFalse(self.storage.exists(transaction.acquittance_doc.name),
                          "File should have been deleted but still exists.")
 
@@ -115,7 +119,6 @@ class TransactionModelMethodsTests(TestCase):
         transaction.acquittance_doc = new_image
         transaction.save()
 
-        # Directly check if the old file still exists using the configured storage
         self.assertFalse(transaction.acquittance_doc.storage.exists(
             old_image_path), "Old file should have been deleted but still exists.")
 

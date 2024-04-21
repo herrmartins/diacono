@@ -8,19 +8,25 @@ from treasury.utils import (
     get_aggregate_transactions_by_category,
     get_total_transactions_amount,
     get_last_day_of_month,
+    custom_upload_to
 )
 from users.models import CustomUser
 from model_mommy import mommy
 from decimal import Decimal
 from django.test import TestCase
+from unittest.mock import Mock
+import uuid
+import os
 
 
 class TestTransactionUtils(TestCase):
     def setUp(self):
         self.user = mommy.make(CustomUser)
         self.now = timezone.now().date().replace(day=1)
-        self.one_month_ago = timezone.now().date().replace(day=1) - relativedelta(months=1)
-        mommy.make(MonthlyBalance, month=self.one_month_ago, is_first_month=True)
+        self.one_month_ago = timezone.now().date().replace(day=1) - \
+            relativedelta(months=1)
+        mommy.make(MonthlyBalance, month=self.one_month_ago,
+                   is_first_month=True)
 
         self.category1 = mommy.make(CategoryModel, name="Category 1")
         self.category2 = mommy.make(CategoryModel, name="Category 2")
@@ -119,15 +125,18 @@ class TestTransactionUtils(TestCase):
         self.assertEqual(total_amount_empty, "0.00")
 
         # Test 3: Negative Values - Test with negative transaction values
-        transactions_dict_negative = {"Category 1": "-25.00", "Category 2": "-50.00"}
+        transactions_dict_negative = {
+            "Category 1": "-25.00", "Category 2": "-50.00"}
         total_amount_negative = get_total_transactions_amount(
             transactions_dict_negative
         )
         self.assertEqual(total_amount_negative, "-75.00")
 
         # Test 4: Edge Cases - Large values, zero, singular values
-        transactions_dict_large = {"Category 1": "1000.00", "Category 2": "0.00"}
-        total_amount_large = get_total_transactions_amount(transactions_dict_large)
+        transactions_dict_large = {
+            "Category 1": "1000.00", "Category 2": "0.00"}
+        total_amount_large = get_total_transactions_amount(
+            transactions_dict_large)
         self.assertEqual(total_amount_large, "1000.00")
 
     def test_last_day_of_month(self):
@@ -151,6 +160,30 @@ class TestTransactionUtils(TestCase):
             get_last_day_of_month(2023, 13)
         with self.assertRaises(ValueError):
             get_last_day_of_month(2023, 0)
+
+    def test_custom_upload_to(self):
+        instance = Mock()
+        instance.id = 123
+
+        filenames = [
+            "example.JPG", "document.pdf", "image.png", "photo.jpeg", "testfile.mpo"
+        ]
+
+        for filename in filenames:
+            with self.subTest(filename=filename):
+                result_path = custom_upload_to(instance, filename)
+                normalized_path = result_path.replace('\\', '/')
+                file_part = normalized_path.split(
+                    '/')[-1]
+                uuid_str, _ = os.path.splitext(
+                    file_part)
+
+                try:
+                    uuid_obj = uuid.UUID(uuid_str, version=4)
+                    self.assertIsNotNone(uuid_obj)
+                except ValueError:
+                    self.fail(
+                        f"UUID format is incorrect in generated filename: {normalized_path}")
 
 
 if __name__ == "__main__":

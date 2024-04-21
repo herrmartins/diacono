@@ -8,6 +8,10 @@ class TransactionForm(forms.ModelForm):
         model = TransactionModel
         fields = ['user', 'category', 'description',
                   'amount', 'date', 'acquittance_doc']
+
+        fields = ['user', 'category', 'description',
+                  'amount', 'date', 'acquittance_doc']
+
         labels = {
             'category': 'Categoria',
             'description': 'Descrição',
@@ -31,6 +35,9 @@ class TransactionForm(forms.ModelForm):
             'class': 'form-control-file',
             'accept': 'image/jpeg,image/png'
         })
+
+        self.fields['acquittance_doc'].widget.attrs['accept'] = 'image/jpeg, image/png'
+
         initial_date = self.initial.get('date')
         if initial_date:
             self.initial['date'] = initial_date.strftime('%Y-%m-%d')

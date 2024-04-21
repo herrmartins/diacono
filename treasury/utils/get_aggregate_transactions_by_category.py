@@ -3,6 +3,7 @@ from decimal import Decimal
 
 
 def get_aggregate_transactions_by_category(year, month, is_positive=True):
+    from treasury.models import TransactionModel
     transactions_filter = {
         "date__year": year,
         "date__month": month,

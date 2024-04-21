@@ -8,9 +8,9 @@ from treasury.models import (
     MonthlyTransactionByCategoryModel,
 )
 
-admin.site.register(TransactionModel)
 admin.site.register(TransactionEditHistory)
 admin.site.register(CategoryModel)
 admin.site.register(MonthlyBalance)
 admin.site.register(MonthlyReportModel)
 admin.site.register(MonthlyTransactionByCategoryModel)
+admin.site.register(TransactionModel)

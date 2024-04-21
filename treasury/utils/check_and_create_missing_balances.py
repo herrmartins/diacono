@@ -5,6 +5,7 @@ from django.utils import timezone
 
 
 def check_and_create_missing_balances(date):
+    from treasury.models import MonthlyBalance
     current_datetime = datetime.datetime.now()
     current_datetime = timezone.make_aware(current_datetime)
     current_date = current_datetime.date()

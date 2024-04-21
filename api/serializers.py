@@ -49,7 +49,14 @@ class TransactionCatModelSerializer(serializers.ModelSerializer):
 class TransactionModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransactionModel
-        fields = "__all__"
+        fields = '__all__'  # Ensure 'acquittance_doc' is included if '__all__' is not used
+
+    # # If you need custom validation or handling for the uploaded file, add it here
+    # def validate_acquittance_doc(self, value):
+    #     """
+    #     Add any custom validation for your file here, e.g., checking file size, type, etc.
+    #     """
+    #     return value
 
 
 class BalanceSerializer(serializers.Serializer):

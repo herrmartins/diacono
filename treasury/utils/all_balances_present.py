@@ -3,6 +3,7 @@ from treasury.exceptions import NoInitialMonthlyBalance
 
 
 def all_balances_present():
+    from treasury.models import MonthlyBalance
     current_month = timezone.now().date().replace(day=1)
     from treasury.models import MonthlyBalance
     first_monthly_balance = MonthlyBalance.objects.filter(

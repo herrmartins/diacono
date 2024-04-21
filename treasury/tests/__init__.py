@@ -6,4 +6,5 @@ from .month_transactions_archive_test import MonthlyCarchiveViewTests
 from .generate_month_report_tests import GenerateMonthlyReportViewTests
 from .monthly_balance_model_tests import MonthlyBalanceModelTest
 from .special_transaction_testing import SpecialTransactionModelTests
+from .transaction_model_methods_tests import TransactionModelMethodsTests
 from .test_utils import get_test_image_file
