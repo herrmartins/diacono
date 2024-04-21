@@ -3,6 +3,8 @@ from core.models import BaseModel
 from treasury.models import CategoryModel
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django_resized import ResizedImageField
+from treasury.utils import custom_upload_to
 
 
 class TransactionModel(BaseModel):
@@ -18,6 +20,9 @@ class TransactionModel(BaseModel):
     edit_history = models.ManyToManyField(
         "treasury.TransactionEditHistory", blank=True)
 
+    acquittance_doc = ResizedImageField(
+        size=[1200, 850], upload_to=custom_upload_to, blank=True, null=True, force_format="JPEG")
+
     class Meta:
         verbose_name = "Transação"
         verbose_name_plural = "Transações"
@@ -26,15 +31,25 @@ class TransactionModel(BaseModel):
         return f"{self.date} - {self.description} - R$ {self.amount}"
 
     def save(self, *args, **kwargs):
+        if self.pk:
+            old_record = TransactionModel.objects.get(pk=self.pk)
+            if old_record.acquittance_doc != self.acquittance_doc:
+                old_record.acquittance_doc.delete(save=False)
+
         today = timezone.now().date()
         if self.date > today:
             raise ValidationError("Cannot add transactions with a future date")
 
+        from treasury.models import MonthlyBalance
         try:
-            from treasury.models import MonthlyBalance
             MonthlyBalance.objects.get(is_first_month=True)
         except MonthlyBalance.DoesNotExist:
             raise ValidationError(
                 "Cannot add transactions without adding the monthly balances...")
 
         super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.acquittance_doc:
+            self.acquittance_doc.delete(save=False)
+        super().delete(*args, **kwargs)

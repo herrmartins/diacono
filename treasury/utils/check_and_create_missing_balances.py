@@ -1,5 +1,4 @@
 from dateutil.relativedelta import relativedelta
-from treasury.models import MonthlyBalance
 from treasury.exceptions import NoInitialMonthlyBalance
 import datetime
 from django.utils import timezone
@@ -11,6 +10,7 @@ def check_and_create_missing_balances(date):
     current_date = current_datetime.date()
 
     current_month = current_date.replace(day=1)
+    from treasury.models import MonthlyBalance
     first_monthly_balance = MonthlyBalance.objects.filter(
         is_first_month=True).first()
 

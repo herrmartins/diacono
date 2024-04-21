@@ -1,10 +1,10 @@
 from django.utils import timezone
-from treasury.models import MonthlyBalance
 from treasury.exceptions import NoInitialMonthlyBalance
 
 
 def all_balances_present():
     current_month = timezone.now().date().replace(day=1)
+    from treasury.models import MonthlyBalance
     first_monthly_balance = MonthlyBalance.objects.filter(
         is_first_month=True).first()
     if not first_monthly_balance:

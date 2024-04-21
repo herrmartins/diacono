@@ -1,17 +1,19 @@
 from django import forms
 from treasury.models import TransactionModel
-from django.forms.widgets import HiddenInput
+from django.forms.widgets import HiddenInput, FileInput
 
 
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = TransactionModel
-        fields = ['user', 'category', 'description', 'amount', 'date']
+        fields = ['user', 'category', 'description',
+                  'amount', 'date', 'acquittance_doc']
         labels = {
             'category': 'Categoria',
             'description': 'Descrição',
             'amount': 'Valor',
-            'date': 'Data'
+            'date': 'Data',
+            'acquittance_doc': 'Recibo',
         }
 
     def __init__(self, *args, **kwargs):
@@ -25,7 +27,10 @@ class TransactionForm(forms.ModelForm):
         self.fields['amount'].widget.attrs['class'] = 'form-control'
         self.fields['date'].widget = forms.DateInput(
             attrs={'class': 'form-control', 'type': 'date'})
-
+        self.fields['acquittance_doc'].widget = FileInput(attrs={
+            'class': 'form-control-file',
+            'accept': 'image/jpeg,image/png'
+        })
         initial_date = self.initial.get('date')
         if initial_date:
             self.initial['date'] = initial_date.strftime('%Y-%m-%d')

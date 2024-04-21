@@ -7,7 +7,9 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 
 
-class EventCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+class EventCreateView(PermissionRequiredMixin,
+                      SuccessMessageMixin,
+                      CreateView):
     permission_required = "events.add_event"
     model = Event
     form_class = EventForm

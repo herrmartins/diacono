@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import mimetypes
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -155,6 +156,13 @@ CKEDITOR_CONFIGS = {
         'toolbarCanCollapse': 'true'
     },
 }
+
+
+mimetypes.add_type('image/jpeg', '.jpeg', True)
+mimetypes.add_type('image/jpeg', '.jpg', True)
+mimetypes.init()
+
+
 LANGUAGE_CODE = 'pt-br'
 USE_I18N = True
 USE_L10N = True
