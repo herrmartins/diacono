@@ -22,6 +22,7 @@ class TransactionDetailView(PermissionRequiredMixin, DetailView):
             "description": transaction.description,
             "amount": transaction.amount,
             "date": transaction.date,
+            "acquittance_doc": transaction.acquittance_doc,
         }
         form = TransactionForm(initial=initial_data)
 

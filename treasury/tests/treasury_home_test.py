@@ -95,7 +95,6 @@ class TreasuryHomeViewTest(TestCase):
             response = self.client.get(self.treasury_home_url)
             self.assertEqual(response.status_code, 302)
             balances = MonthlyBalance.objects.all().count()
-            print("Contados:", balances)
             self.assertEqual(response['Location'], self.treasury_home_url)
 
         test_date = now + relativedelta(months=7)

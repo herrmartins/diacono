@@ -9,7 +9,6 @@ from treasury.models import (
 from .utils import get_aggregate_transactions_by_category
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
-from datetime import timedelta
 from django.db import models
 from django.db.models import F, Sum
 from decimal import Decimal
@@ -17,7 +16,7 @@ from decimal import Decimal
 
 @receiver(post_save, sender=MonthlyReportModel)
 def post_save_monthly_report(sender, instance, created, **kwargs):
-    if created:  # Runs only when a new instance is created
+    if created:
         year = instance.month.year
         month = instance.month.month
         report_month = instance.month
@@ -31,8 +30,10 @@ def post_save_monthly_report(sender, instance, created, **kwargs):
             year, month, False
         )
 
-        save_transactions(positive_transactions_dict, instance, is_positive=True)
-        save_transactions(negative_transactions_dict, instance, is_positive=False)
+        save_transactions(positive_transactions_dict,
+                          instance, is_positive=True)
+        save_transactions(negative_transactions_dict,
+                          instance, is_positive=False)
 
 
 def save_transactions(transactions_dict, instance, is_positive):
@@ -58,7 +59,6 @@ def create_missing_monthly_balances(sender, instance, created, **kwargs):
             instance_month.year == current_date.year
             and instance_month.month <= current_date.month
         ):
-            print("CRIANDO MESES NO WHILE", instance_month)
             n_while += 1
             if not MonthlyBalance.objects.filter(month=instance_month).exists():
                 is_first = instance_month == instance.month
@@ -69,6 +69,7 @@ def create_missing_monthly_balances(sender, instance, created, **kwargs):
                 )
             next_month = instance_month + relativedelta(months=1)
             instance_month = next_month.replace(day=1)
+
 
 @receiver(pre_save, sender=TransactionModel)
 def track_transaction_edit(sender, instance, **kwargs):
@@ -105,7 +106,6 @@ def update_monthly_balance_on_delete(sender, instance, **kwargs):
         month=month, defaults={"balance": models.F("balance") - amount}
     )
 
-    # Update subsequent months' balances
     subsequent_months = MonthlyBalance.objects.filter(month__gt=month)
     for sub_month in subsequent_months:
         sub_month_transactions = TransactionModel.objects.filter(
@@ -113,7 +113,8 @@ def update_monthly_balance_on_delete(sender, instance, **kwargs):
             date__month=sub_month.month.month,
         )
         sub_month_balance = (
-            sub_month_transactions.aggregate(total_amount=Sum("amount"))["total_amount"]
+            sub_month_transactions.aggregate(total_amount=Sum("amount"))[
+                "total_amount"]
             or 0
         )
 
@@ -126,20 +127,17 @@ def update_monthly_balance_on_create(sender, instance, created, **kwargs):
     if created:
         month = instance.date.replace(day=1)
         difference = instance.amount
-        print("VALOR DA TRANSAÇÃO:", instance.amount)
         try:
             current_monthly_balance = MonthlyBalance.objects.get(month=month)
             current_monthly_balance.balance = F("balance") + difference
             current_monthly_balance.save()
         except MonthlyBalance.DoesNotExist:
-            print("NÃO EXISTE...")
             previous_month = month - relativedelta(months=1)
             try:
                 previous_month_balance = MonthlyBalance.objects.get(
                     month=previous_month
                 )
                 previous_balance = previous_month_balance.balance
-                print("aqui, tentando...")
             except MonthlyBalance.DoesNotExist:
                 previous_balance = 0
 

@@ -15,7 +15,7 @@ def update_monthly_balance_on_create(sender, instance, **kwargs):
         transaction_month = instance.date.replace(day=1)
         first_month = MonthlyBalance.objects.get(is_first_month=True)
         if first_month.month >= instance.date.replace(day=1):
-            print("DATA DA INSTANCIA PARA EFEITOS", instance)
+            pass
         else:
             if monthly_balance_exists(transaction_month):
                 with transaction.atomic():

@@ -36,8 +36,6 @@ class TransactionForm(forms.ModelForm):
             'accept': 'image/jpeg,image/png'
         })
 
-        self.fields['acquittance_doc'].widget.attrs['accept'] = 'image/jpeg, image/png'
-
         initial_date = self.initial.get('date')
         if initial_date:
             self.initial['date'] = initial_date.strftime('%Y-%m-%d')

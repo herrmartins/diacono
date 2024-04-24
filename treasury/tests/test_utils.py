@@ -12,7 +12,8 @@ def get_test_image_file():
 
     # Create an image with a random color
     image = Image.new('RGB', (100, 100), color=color)
-    image.save(image_io, 'JPEG')  # Save the image as JPEG
+
+    image.save(image_io, format='JPEG')  # Save the image as JPEG
     image_io.seek(0)  # Rewind the file
 
     # Generate a random file name to further ensure uniqueness

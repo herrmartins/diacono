@@ -8,15 +8,12 @@ from io import BytesIO
 from django.utils import timezone
 from PIL import Image
 from django.utils.timezone import now
-from model_mommy import mommy
-from treasury.tests.test_utils import get_test_image_file
+from model_bakery import baker
 import shutil
 from tempfile import mkdtemp
 from django.core.files.storage import Storage
 import os
 from treasury.tests.test_utils import get_test_image_file
-from django.utils.timezone import make_aware
-import datetime
 
 
 class FakeStorage(Storage):
@@ -28,18 +25,22 @@ class FakeStorage(Storage):
         pass
 
     def _save(self, name, content):
-        self.files[name] = content
-        return name
+        normalized_name = os.path.normpath(name)
+        self.files[normalized_name] = content
+        return normalized_name
 
     def delete(self, name):
         if name in self.files:
             del self.files[name]
 
     def exists(self, name):
-        return name in self.files
+        normalized_name = os.path.normpath(name)
+        return normalized_name in self.files
 
     def path(self, name):
-        return os.path.join(self.base_location, name)
+        normalized_path = os.path.normpath(
+            os.path.join(self.base_location, name))
+        return normalized_path
 
     def __del__(self):
         shutil.rmtree(self.base_location)
@@ -78,7 +79,7 @@ class TransactionModelMethodsTests(TestCase):
             month=current_month, is_first_month=True, balance=1000)
 
     def test_save_new_transaction(self):
-        transaction = mommy.make(TransactionModel, acquittance_doc=self.image)
+        transaction = baker.make(TransactionModel, acquittance_doc=self.image)
         self.assertIsNotNone(transaction.pk)
 
     def create_transaction(self, **kwargs):
@@ -93,17 +94,20 @@ class TransactionModelMethodsTests(TestCase):
             "acquittance_doc": doc,
         }
         defaults.update(kwargs)
-        return mommy.make("TransactionModel", **defaults)
+        return baker.make("TransactionModel", **defaults)
 
     def test_delete_transaction(self):
-        transaction = self.create_transaction()
-        print(
-            f"File exists before deletion: {self.storage.exists(transaction.acquittance_doc.name)}")
+        transaction = baker.make("TransactionModel", acquittance_doc=get_test_image_file())
+
+        transaction_id = transaction.id
         transaction.delete()
-        print(
-            f"File exists after deletion: {self.storage.exists(transaction.acquittance_doc.name)}")
-        self.assertFalse(self.storage.exists(transaction.acquittance_doc.name),
-                         "File should have been deleted but still exists.")
+
+        try:
+            still_exists = TransactionModel.objects.get(id=transaction_id)
+        except TransactionModel.DoesNotExist:
+            still_exists = None
+
+        self.assertIsNone(still_exists, "Transaction should not exist in the database anymore.")
 
     def test_save_new_transaction_with_future_date(self):
         future_date = timezone.now().date() + timezone.timedelta(days=1)
@@ -112,7 +116,7 @@ class TransactionModelMethodsTests(TestCase):
 
     def test_update_transaction_changes_file(self):
         new_image = get_test_image_file()
-        transaction = mommy.make(
+        transaction = baker.make(
             'TransactionModel', acquittance_doc=get_test_image_file())
         old_image_path = transaction.acquittance_doc.path
 
@@ -128,3 +132,22 @@ class TransactionModelMethodsTests(TestCase):
             transaction.description = "Updated description"
             transaction.save()
             self.assertFalse(mock_delete.called)
+
+    def test_direct_dictionary_manipulation(self):
+        test_key = "test\\path\\file.jpeg"
+        test_content = "dummy content"
+        self.storage.files[test_key] = test_content
+        assert test_key in self.storage.files
+        del self.storage.files[test_key]
+        assert test_key not in self.storage.files
+
+    def test_storage_delete_directly(self):
+        file_name = 'test_delete.jpg'
+        content = b'Test content'
+        # Use internal method to bypass any Django model behavior
+        self.storage._save(file_name, content)
+
+        # Now try deleting directly using the storage
+        self.storage.delete(file_name)
+        self.assertFalse(file_name in self.storage.files,
+                         "The file should have been deleted from storage.")

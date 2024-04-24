@@ -125,7 +125,7 @@ function loadTransactionData() {
 async function deleteTransaction(id) {
 	const csrfToken = getCookie("csrftoken");
 	const headers = {
-		"Content-Type": "application/json",
+		// "Content-Type": "application/json",
 		"X-CSRFToken": csrfToken,
 	};
 	try {

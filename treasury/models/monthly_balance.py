@@ -23,16 +23,16 @@ class MonthlyBalance(BaseModel):
 
         if not is_testing:
             if self.month is None:
-                raise ValidationError("The month field cannot be None.")
+                raise ValidationError("O campo mês não pode ser nulo...")
             if self.month > current_month:
-                raise ValidationError("Cannot add balances with a future month...")
+                raise ValidationError(
+                    "Não se pode adicionar um saldo para mês futuro...")
 
         super().save(*args, **kwargs)
 
     def delete(self, using=None, keep_parents=False, is_testing=False):
         if not is_testing:
             raise ProtectedError(
-                "Deletion of MonthlyBalance instances is not allowed.", self)
+                "Não se pode deletar um balanço mensal...", self)
 
         super().delete(using=using, keep_parents=keep_parents)
-

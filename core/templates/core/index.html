@@ -27,15 +27,18 @@
       <div class="card-header">
         <h5 class="card-title">{{ post.title }}</h5>
         <p class="card-text">
-          <small class="text-muted">Postado por {{ post.author.first_name }} {{ post.author.last_name }} em {{
-            post.created }}{% if post.created != post.modified %}, atualizado em {{post.modified}}. {% endif %}</small>
+          <small class="text-muted">Postado por {{ post.author.first_name }} {{ post.author.last_name }} em {{ post.created }}{% if post.created != post.modified %}, atualizado em {{post.modified}}. {% endif %}</small>
         </p>
       </div>
       <div class="card-body">
         <p class="card-text">{{ post.content|safe }}</p>
       </div>
       <div class="card-footer">
-        <small class="text-muted">Categoria: {{ post.category }}</small>
+        <small class="text-muted">Categorias: {% for category in post.categories.all %}
+          {{ category.name }}{% if not forloop.last %}, {% endif %}
+          {% empty %}
+          Não categorizado...
+          {% endfor %}</small>
       </div>
     </div>
   </div>
