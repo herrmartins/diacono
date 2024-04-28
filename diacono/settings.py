@@ -158,8 +158,8 @@ CKEDITOR_CONFIGS = {
 }
 
 
-mimetypes.add_type('image/jpeg', '.jpeg', True)
-mimetypes.add_type('image/jpeg', '.jpg', True)
+mimetypes.add_type('image/jpeg', '.jpg', strict=True)
+mimetypes.add_type('image/jpeg', '.jpeg', strict=True)
 mimetypes.init()
 
 
@@ -178,5 +178,3 @@ EMAIL_USE_TLS = True
 
 handler404 = 'core.views.custom_404'
 handler403 = 'core.views.custom_403'
-mimetypes.add_type('image/jpeg', '.jpg', strict=True)
-mimetypes.add_type('image/jpeg', '.jpeg', strict=True)
