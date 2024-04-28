@@ -3,11 +3,13 @@ from core.models import BaseModel
 from users.models import CustomUser
 from django.utils import timezone
 from treasury.models import TransactionModel
+# Actually it also includes delete...
 
 
 class TransactionEditHistory(BaseModel):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
-    transaction = models.ForeignKey(TransactionModel, on_delete=models.CASCADE)
+    transaction = models.ForeignKey(
+        TransactionModel, on_delete=models.SET_NULL, null=True, blank=True)
     original_description = models.CharField(max_length=255)
     original_amount = models.DecimalField(
         max_digits=10, decimal_places=2, default=0)
