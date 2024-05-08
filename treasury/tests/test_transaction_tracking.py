@@ -26,7 +26,6 @@ class TransactionSignalTests(TestCase):
         pre_delete.connect(track_transaction_edit, sender=TransactionModel)
 
         self.transaction.delete()
-        print("Transações após delete:", TransactionModel.objects.all())
 
         history = TransactionEditHistory.objects.last()
         self.assertIsNotNone(history)

@@ -1,6 +1,7 @@
 diacono/.env
 
 media/img/profile/
+media/treasury/receipts/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

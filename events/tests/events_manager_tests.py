@@ -3,7 +3,7 @@ from django.utils import timezone
 from datetime import timedelta
 from events.models import Event, Venue, EventCategory
 from users.models import CustomUser
-from model_mommy import mommy
+from model_bakery import baker
 
 
 class EventManagerTests(TestCase):
@@ -11,15 +11,15 @@ class EventManagerTests(TestCase):
         self.user = CustomUser.objects.create(username='testuser')
         self.event_manager = Event.objects
         self.current_date = timezone.now()
-        self.venue = mommy.make(Venue)
-        mommy.make(EventCategory, _quantity=3)
+        self.venue = baker.make(Venue)
+        baker.make(EventCategory, _quantity=3)
 
         # Create events for testing
         for month in range(1, 13):
             # Create events in future months
             start_date = self.current_date + timedelta(days=30 * month)
             end_date = start_date + timedelta(days=3)
-            mommy.make(Event,
+            baker.make(Event,
                        user=self.user,
                        title=f"Event {month}",
                        start_date=start_date,
@@ -30,7 +30,7 @@ class EventManagerTests(TestCase):
                        contact_name="Test Contact",
                        )
 
-        self.yesterday_event = mommy.make(Event,
+        self.yesterday_event = baker.make(Event,
                                           title="Yesterday's Event",
                                           start_date=self.current_date -
                                           timedelta(days=2),
@@ -49,7 +49,7 @@ class EventManagerTests(TestCase):
 
         # Check if events are grouped by month correctly
         for month_num, events in events_by_month.items():
-            month = self.current_date.replace(month=month_num)
+            month = self.current_date.replace(day=1, month=month_num)
             self.assertTrue(all(event.start_date.month ==
                             month_num for event in events))
             self.assertTrue(all(event.start_date.year ==

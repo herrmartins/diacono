@@ -75,6 +75,13 @@
         <div class="col-auto">
             <a href="{% url 'treasury:export-anreport-pdf' pk_value %}" class="btn btn-primary">Gerar PDF</a>
         </div>
+        <div class="col-auto">
+            <form id="deleteForm" action="{% url 'treasury:delete-an_report' pk_value %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-danger" value="Deletar Relatório">
+            </form>
+
+        </div>
     </div>
 </div>
 {% endblock %}

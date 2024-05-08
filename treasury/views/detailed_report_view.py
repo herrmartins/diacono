@@ -1,11 +1,12 @@
 from django.views.generic import MonthArchiveView
-from treasury.models import TransactionModel, MonthlyBalance
+from treasury.models import TransactionModel, MonthlyBalance, MonthlyReportModel
 from dateutil.relativedelta import relativedelta
 from datetime import date
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Sum
 from django.shortcuts import redirect
 from django.contrib import messages
+from django.core.exceptions import MultipleObjectsReturned
 
 
 class TransactionMonthArchiveView(PermissionRequiredMixin, MonthArchiveView):
@@ -43,6 +44,17 @@ class TransactionMonthArchiveView(PermissionRequiredMixin, MonthArchiveView):
         previous_month_balance = 0
         current_date = date.today()
         not_current_date = True
+
+        try:
+            report = MonthlyReportModel.objects.get(
+                month__month=context["month"], month__year=context["year"])
+            context["is_report"] = True
+        except MonthlyReportModel.DoesNotExist:
+            context["is_report"] = False
+        except MultipleObjectsReturned:
+            context["is_report"] = True
+            messages.info(
+                self.request, "Há mais de um relatório analítico para este mês, verifique o(s) incorreto(s) e o(s) delete...")
 
         if (
             current_date.month == context["month"]

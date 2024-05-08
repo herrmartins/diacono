@@ -10,3 +10,4 @@ from .generate_monthly_pdf_analytical_report_view import GenerateMonthlyPDFAnRep
 from .generate_report_view import GenerateMonthlyReportView
 from .create_monthly_report import MonthlyReportCreateView
 from .analytical_detailed_report_view import MonthlyAnalyticalReportDetailView
+from .analytical_report_delete_view import AnReportDeleteView

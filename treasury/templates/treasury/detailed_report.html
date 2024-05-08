@@ -11,10 +11,11 @@
       >Gerar PDF</a
     >
     {% if ncd and user.is_treasurer %}
+    {% if not is_report %}
     <a href="{% url 'treasury:gen-report' month year %}" class="btn btn-success"
       >Gerar Relatório Analítico</a
     >
-    {% endif %}
+    {% endif %} {% endif %}
   </div>
 </div>
 

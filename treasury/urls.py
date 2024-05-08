@@ -12,6 +12,7 @@ from treasury.views import (
     MonthlyReportCreateView,
     MonthlyAnalyticalReportDetailView,
     GenerateMonthlyPDFAnReportView,
+    AnReportDeleteView,
 )
 
 app_name = "treasury"
@@ -34,6 +35,7 @@ urlpatterns = [
         GenerateMonthlyPDFTransactionListView,
         name="export-pdf-monthly-report",
     ),
+    path("reports/an_report/delete/<int:pk>", AnReportDeleteView.as_view(), name="delete-an_report"),
     path(
         "transaction/<int:pk>",
         TransactionDetailView.as_view(),
